@@ -41,17 +41,9 @@ const BannerCreate = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
 
-    const imagesData = useSelector((state) => state.images);
+    const images = useSelector((state) => state.images);
     const { isLoading: isFetchingImages } = useGetImagesQuery();
 
-    const images =
-        imagesData &&
-        imagesData.map((image) => {
-            return {
-                id: image.id,
-                url: `${API_DOMAIN}${image.url}`,
-            };
-        });
     const [createBanner, { isLoading: isLoadingCreateBanner }] =
         useCreateBannerMutation();
     const [uploadImage, { isLoading: isLoadingUploadImage }] =

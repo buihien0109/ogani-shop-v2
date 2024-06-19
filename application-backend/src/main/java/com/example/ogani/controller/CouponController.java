@@ -25,6 +25,11 @@ public class CouponController {
         return ResponseEntity.ok(couponService.getAllCoupons());
     }
 
+    @GetMapping("/admin/coupons/valid")
+    public ResponseEntity<?> getAllValidCoupons() {
+        return ResponseEntity.ok(couponService.getAllValidCoupons());
+    }
+
     @PostMapping("/admin/coupons")
     public ResponseEntity<?> createCoupon(@Valid @RequestBody UpsertCouponRequest request) {
         return ResponseEntity.ok(couponService.createCoupon(request));

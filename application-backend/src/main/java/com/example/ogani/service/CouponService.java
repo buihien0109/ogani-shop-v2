@@ -39,6 +39,14 @@ public class CouponService {
         return couponRepository.findAll(Sort.by("createdAt").descending());
     }
 
+    public  List<Coupon> getAllValidCoupons() {
+        List<Coupon> coupons = couponRepository
+                .findByStartDateBeforeAndEndDateAfterAndStatus(LocalDateTime.now(), LocalDateTime.now(), true);
+        return coupons.stream()
+                .filter(coupon -> coupon.getUsed() < coupon.getQuantity())
+                .toList();
+    }
+
     public Coupon createCoupon(UpsertCouponRequest request) {
         if (couponRepository.existsByCode(request.getCode())) {
             throw new BadRequestException("Mã coupon không được trùng nhau");

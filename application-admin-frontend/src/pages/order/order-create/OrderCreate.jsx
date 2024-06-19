@@ -8,7 +8,9 @@ import { useGetDistrictsQuery, useGetWardsQuery } from "../../../app/services/ad
 import { useCreateOrderMutation } from "../../../app/services/order.service";
 import { useGetAddressesByUserQuery } from "../../../app/services/userAddress.service";
 import AppBreadCrumb from "../../../components/layout/AppBreadCrumb";
-import ModalChoseUser from "./ModalChoseUser";
+import ModalChoseAddress from "./components/ModalChoseAddress";
+import ModalChoseUser from "./components/ModalChoseUser";
+import OrderProduct from "./components/OrderProduct";
 
 const breadcrumb = [
     { label: "Danh sách đơn hàng", href: "/admin/orders" },
@@ -22,8 +24,12 @@ const OrderCreate = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
 
+    const [data, setData] = useState([]);
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedAddress, setSelectedAddress] = useState(null);
     const [openModalChoseUser, setOpenModalChoseUser] = useState(false);
+    const [openModalChoseAddress, setOpenModalChoseAddress] = useState(false);
     const [provinceCode, setProvinceCode] = useState(null);
     const [districtCode, setDistrictCode] = useState(null);
     const [createOrder, { isLoading }] = useCreateOrderMutation();
@@ -34,17 +40,17 @@ const OrderCreate = () => {
     useEffect(() => {
         if (provinceCode) {
             form.setFieldsValue({ district: null, ward: null });
-            setDistrictCode(null);
         }
     }, [provinceCode])
 
     useEffect(() => {
-        if (setDistrictCode) {
+        if (districtCode) {
             form.setFieldsValue({ ward: null });
         }
-    }, [setDistrictCode])
+    }, [districtCode])
 
     useEffect(() => {
+        form.resetFields();
         if (selectedUser) {
             form.setFieldValue('name', selectedUser.name);
             form.setFieldValue('email', selectedUser.email);
@@ -53,20 +59,18 @@ const OrderCreate = () => {
     }, [selectedUser])
 
     useEffect(() => {
-        if(!userAddresses) return;
-        const defaultAddress = userAddresses?.find(address => address?.isDefault);
-        if(defaultAddress) {
-            setProvinceCode(defaultAddress?.province?.code);
-            setDistrictCode(defaultAddress?.district?.code);
-            form.setFieldsValue({
-                province: defaultAddress?.province?.code,
-                district: defaultAddress?.district?.code,
-                ward: defaultAddress?.ward?.code,
-                address: defaultAddress?.detail,
-            });
+        if (selectedAddress) {
+            form.setFieldValue('province', selectedAddress.province.code);
+            form.setFieldValue('district', selectedAddress.district.code);
+            form.setFieldValue('ward', selectedAddress.ward.code);
+            form.setFieldValue('address', selectedAddress.detail);
+        } else {
+            form.setFieldValue('province', null);
+            form.setFieldValue('district', null);
+            form.setFieldValue('ward', null);
+            form.setFieldValue('address', null);
         }
-
-    }, [userAddresses])
+    }, [selectedAddress])
 
 
     const handleCreate = () => {
@@ -88,8 +92,49 @@ const OrderCreate = () => {
     };
 
     const handleSetSelectedUser = (value) => {
-        console.log(value);
         setSelectedUser(value)
+    }
+
+    const handleGetSelectedProduct = (value) => {
+        const { product } = value;
+        if (!product) return;
+        const isExist = data.find((item) => item.product.id === product.id);
+        if (isExist) {
+            message.warning("Sản phẩm đã tồn tại trong danh sách");
+        } else {
+            setData([...data, value]);
+            message.success("Thêm sản phẩm thành công");
+        }
+    }
+
+    const handleUpdateSelectedProduct = (value) => {
+        const { product, quantity } = value;
+        const newData = data.map((item) => {
+            if (item.product.id === product.id) {
+                return {
+                    ...item,
+                    quantity: quantity,
+                }
+            }
+            return item;
+        });
+        setData(newData);
+        message.success("Cập nhật sản phẩm thành công!");
+    }
+
+    const handleDeleteSelectedProduct = (index) => {
+        const newData = data.filter((_, i) => i !== index);
+        setData(newData);
+    }
+
+    const handleGetSelectedCoupon = (value) => {
+        setSelectedCoupon(value);
+    }
+
+    const handleGetSelectedAddress = (value) => {
+        setProvinceCode(prev => value?.province?.code);
+        setDistrictCode(prev => value?.district?.code);
+        setSelectedAddress(prev => value);
     }
 
     return (
@@ -137,6 +182,29 @@ const OrderCreate = () => {
                     layout="vertical"
                     autoComplete="off"
                 >
+                    {selectedUser && (
+                        <>
+                            <Row gutter={[16, 16]} wrap={true}>
+                                <Col span={24}>
+                                    <Typography.Title level={5}>Khách hàng đang chọn: {selectedUser?.name}</Typography.Title>
+                                    <Typography.Paragraph
+                                        style={{ color: "rgb(13, 110, 253)", cursor: "pointer" }}
+                                        onClick={() => setOpenModalChoseAddress(true)}
+                                    >
+                                        Các địa chỉ nhận hàng của khách hàng
+                                    </Typography.Paragraph>
+                                    <Button
+                                        type="primary"
+                                        danger
+                                        onClick={() => setSelectedUser(null)}
+                                    >
+                                        Hủy chọn khách hàng
+                                    </Button>
+                                </Col>
+                            </Row>
+                            <Divider />
+                        </>
+                    )}
                     <Row gutter={[16, 16]} wrap={true}>
                         <Col span={8}>
                             <Typography.Title level={5}>Thông tin khách hàng</Typography.Title>
@@ -223,6 +291,7 @@ const OrderCreate = () => {
                                     }))}
                                     onChange={(value) => {
                                         setProvinceCode(value)
+                                        setDistrictCode(null)
                                     }}
                                 />
                             </Form.Item>
@@ -276,7 +345,7 @@ const OrderCreate = () => {
                                         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
                                     options={wards?.map(ward => ({
                                         label: ward.name,
-                                        value: ward.name
+                                        value: ward.code
                                     }))}
                                     disabled={!districtCode}
                                 />
@@ -349,18 +418,50 @@ const OrderCreate = () => {
                                     ]}
                                 />
                             </Form.Item>
+
+                            <Typography.Title level={5}>Ghi chú đơn hàng</Typography.Title>
+                            <Form.Item
+                                label="Ghi chú đơn hàng (Admin)"
+                                name="adminNote"
+                            >
+                                <Input.TextArea
+                                    rows={4}
+                                    placeholder="Enter admin note"
+                                />
+                            </Form.Item>
                         </Col>
                     </Row>
                 </Form>
 
+                <Divider />
+
+                <Typography.Title level={5}>Sản phẩm</Typography.Title>
+                <OrderProduct
+                    data={data}
+                    coupon={selectedCoupon}
+                    onDeleteSelectedProduct={handleDeleteSelectedProduct}
+                    onUpdateSelectedProduct={handleUpdateSelectedProduct}
+                    onGetSelectedProduct={handleGetSelectedProduct}
+                    onGetSelectedCoupon={handleGetSelectedCoupon}
+                />
+
                 {openModalChoseUser && (
                     <ModalChoseUser
                         open={openModalChoseUser}
-                        setOpen={setOpenModalChoseUser}
+                        onCancel={() => setOpenModalChoseUser(false)}
                         onSetSelectedUser={handleSetSelectedUser}
                     />
                 )}
-                <Divider />
+
+                {openModalChoseAddress && selectedUser && (
+                    <ModalChoseAddress
+                        data={userAddresses}
+                        currentAddress={selectedAddress}
+                        open={openModalChoseAddress}
+                        onCancel={() => setOpenModalChoseAddress(false)}
+                        onGetSelectedAddress={handleGetSelectedAddress}
+                    />
+                )}
             </div>
         </>
     );

@@ -24,6 +24,7 @@ import authReducer from "./slices/auth.slice";
 import imageReducer from "./slices/image.slice";
 import { addressApi } from "./services/address.service";
 import { userAddressApi } from "./services/userAddress.service";
+import { reportApi } from "./services/report.service";
 
 const store = configureStore({
     reducer: {
@@ -48,6 +49,7 @@ const store = configureStore({
         [productAttributeApi.reducerPath]: productAttributeApi.reducer,
         [addressApi.reducerPath]: addressApi.reducer,
         [userAddressApi.reducerPath]: userAddressApi.reducer,
+        [reportApi.reducerPath]: reportApi.reducer,
         auth: authReducer,
         images: imageReducer,
         address: addressReducer,
@@ -75,6 +77,7 @@ const store = configureStore({
             productAttributeApi.middleware,
             addressApi.middleware,
             userAddressApi.middleware,
+            reportApi.middleware,
             checkStatusMiddleware
         ),
 });

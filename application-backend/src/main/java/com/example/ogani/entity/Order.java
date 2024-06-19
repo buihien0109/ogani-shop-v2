@@ -1,19 +1,68 @@
 package com.example.ogani.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import com.example.ogani.model.dto.RevenueDto;
 import com.example.ogani.model.enums.OrderPaymentMethod;
 import com.example.ogani.model.enums.OrderShippingMethod;
 import com.example.ogani.model.enums.OrderStatus;
 import com.example.ogani.model.enums.OrderUserType;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+@SqlResultSetMappings(
+        value = {
+                @SqlResultSetMapping(
+                        name = "RevenueResultMapping",
+                        classes = @ConstructorResult(
+                                targetClass = RevenueDto.class,
+                                columns = {
+                                        @ColumnResult(name = "month", type = Integer.class),
+                                        @ColumnResult(name = "year", type = Integer.class),
+                                        @ColumnResult(name = "revenue", type = Long.class)
+                                }
+                        )
+                ),
+
+        }
+
+)
+
+@NamedNativeQuery(
+        name = "getRevenueByMonth",
+        resultSetMapping = "RevenueResultMapping",
+        query = """
+                    SELECT
+                        MONTH(sub.created_at) AS month,
+                        YEAR(sub.created_at) AS year,
+                        SUM(sub.total) AS revenue
+                    FROM (
+                        SELECT
+                            o.created_at,
+                            CASE
+                                WHEN o.coupon_code IS NOT NULL and o.coupon_discount  > 0 THEN SUM(oi.quantity * oi.price * (1 - o.coupon_discount / 100))
+                                ELSE SUM(oi.quantity * oi.price)
+                            END AS total
+                        FROM
+                            orders o
+                        JOIN
+                            order_items oi ON o.id = oi.order_id
+                        WHERE
+                            o.status = 'COMPLETE'
+                        GROUP BY
+                            o.id, o.created_at, o.coupon_code, o.coupon_discount
+                        ) AS sub
+                    GROUP BY
+                        MONTH(sub.created_at), YEAR(sub.created_at)
+                    ORDER BY
+                        YEAR(sub.created_at), MONTH(sub.created_at)
+                """
+)
 
 @AllArgsConstructor
 @NoArgsConstructor

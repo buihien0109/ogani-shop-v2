@@ -9,6 +9,10 @@ export const couponApi = createApi({
             query: () => '/coupons',
             providesTags: ['Coupon'],
         }),
+        getValidCoupons: builder.query({
+            query: () => '/coupons/valid',
+            providesTags: ['Coupon'],
+        }),
         getCouponById: builder.query({
             query: (id) => `/coupons/${id}`,
         }),
@@ -40,6 +44,7 @@ export const couponApi = createApi({
 
 export const {
     useGetCouponsQuery,
+    useGetValidCouponsQuery,
     useGetCouponByIdQuery,
     useCreateCouponMutation,
     useUpdateCouponMutation,

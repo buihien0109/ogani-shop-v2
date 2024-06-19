@@ -1,8 +1,8 @@
 import { Button, Modal, Select, Space } from 'antd';
 import React, { useState } from 'react';
-import { useGetUsersQuery } from '../../../app/services/user.service';
+import { useGetUsersQuery } from '../../../../app/services/user.service';
 
-function ModalChoseUser({ open, setOpen, onSetSelectedUser }) {
+function ModalChoseUser({ open, onCancel, onSetSelectedUser }) {
     const { data: users } = useGetUsersQuery();
     const [selectedUser, setSelectedUser] = useState(null);
     return (
@@ -11,7 +11,7 @@ function ModalChoseUser({ open, setOpen, onSetSelectedUser }) {
                 open={open}
                 title="Chọn user"
                 footer={null}
-                onCancel={() => setOpen(false)}
+                onCancel={onCancel}
             >
                 <Select
                     style={{ width: "100%" }}
@@ -35,7 +35,7 @@ function ModalChoseUser({ open, setOpen, onSetSelectedUser }) {
                         disabled={!selectedUser}
                         onClick={() => {
                             onSetSelectedUser(users.find((user) => user.id === selectedUser))
-                            setOpen(false);
+                            onCancel();
                         }}
                     >
                         Xác nhận

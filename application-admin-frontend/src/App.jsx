@@ -15,6 +15,7 @@ import BlogDetail from "./pages/blog/blog-detail/BlogDetail";
 import BlogList from "./pages/blog/blog-list/BlogList";
 import OwnBlogList from "./pages/blog/own-blog/OwnBlogList";
 import CouponList from "./pages/coupon/CouponList";
+import Dashboard from "./pages/dashboard/dashboard/Dashboard";
 import DiscountCampaignCreate from "./pages/discount-campaign/discount-campaign-create/DiscountCampaignCreate";
 import DiscountCampaignDetail from "./pages/discount-campaign/discount-campaign-detail/DiscountCampaignDetail";
 import DiscountCampaignList from "./pages/discount-campaign/discount-campaign-list/DiscountCampaignList";
@@ -27,6 +28,7 @@ import PaymentVoucherList from "./pages/payment-voucher/payment-voucher-list/Pay
 import ProductCreate from "./pages/product/product-create/ProductCreate";
 import ProductDetail from "./pages/product/product-detail/ProductDetail";
 import ProductList from "./pages/product/product-list/ProductList";
+import Report from "./pages/report/Report";
 import SupplierCreate from "./pages/supplier/supplier-create/SupplierCreate";
 import SupplierDetail from "./pages/supplier/supplier-detail/SupplierDetail";
 import SupplierList from "./pages/supplier/supplier-list/SupplierList";
@@ -37,6 +39,7 @@ import TransactionList from "./pages/transaction/transaction-list/TransactionLis
 import UserCreate from "./pages/user/user-create/UserCreate";
 import UserDetail from "./pages/user/user-detail/UserDetail";
 import UserList from "./pages/user/user-list/UserList";
+import CategoryList from "./pages/category/CategoryList";
 
 function App() {
     const dispatch = useDispatch();
@@ -49,7 +52,8 @@ function App() {
             <Route element={<PrivateRoutes />}>
                 <Route element={<AuthorizeRoutes requireRoles={["ADMIN"]} />}>
                     <Route path="/admin" element={<AppLayout />}>
-                        {/* <Route path="dashboard" element={<Dashboard />}></Route> */}
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="reports" element={<Report />} />
                         <Route path="blogs">
                             <Route index element={<BlogList />} />
                             <Route path="own-blogs" element={<OwnBlogList />} />
@@ -58,6 +62,9 @@ function App() {
                         </Route>
                         <Route path="tags">
                             <Route index element={<TagList />} />
+                        </Route>
+                        <Route path="categories">
+                            <Route index element={<CategoryList />} />
                         </Route>
                         <Route path="users">
                             <Route index element={<UserList />} />

@@ -28,10 +28,12 @@ const OrderCreate = () => {
     const [selectedCoupon, setSelectedCoupon] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedAddress, setSelectedAddress] = useState(null);
-    const [openModalChoseUser, setOpenModalChoseUser] = useState(false);
-    const [openModalChoseAddress, setOpenModalChoseAddress] = useState(false);
     const [provinceCode, setProvinceCode] = useState(null);
     const [districtCode, setDistrictCode] = useState(null);
+
+    const [openModalChoseUser, setOpenModalChoseUser] = useState(false);
+    const [openModalChoseAddress, setOpenModalChoseAddress] = useState(false);
+
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const { data: districts } = useGetDistrictsQuery(provinceCode, { skip: !provinceCode });
     const { data: wards } = useGetWardsQuery(districtCode, { skip: !districtCode });
@@ -39,44 +41,56 @@ const OrderCreate = () => {
 
     useEffect(() => {
         if (provinceCode) {
-            form.setFieldsValue({ district: null, ward: null });
+            form.setFieldsValue({ districtCode: null, wardCode: null });
         }
     }, [provinceCode])
 
     useEffect(() => {
         if (districtCode) {
-            form.setFieldsValue({ ward: null });
+            form.setFieldsValue({ wardCode: null });
         }
     }, [districtCode])
 
     useEffect(() => {
         form.resetFields();
         if (selectedUser) {
-            form.setFieldValue('name', selectedUser.name);
-            form.setFieldValue('email', selectedUser.email);
-            form.setFieldValue('phone', selectedUser.phone);
+            form.setFieldsValue({
+                "name": selectedUser?.name,
+                "email": selectedUser?.email,
+                "phone": selectedUser?.phone,
+            });
         }
     }, [selectedUser])
 
     useEffect(() => {
-        if (selectedAddress) {
-            form.setFieldValue('province', selectedAddress.province.code);
-            form.setFieldValue('district', selectedAddress.district.code);
-            form.setFieldValue('ward', selectedAddress.ward.code);
-            form.setFieldValue('address', selectedAddress.detail);
-        } else {
-            form.setFieldValue('province', null);
-            form.setFieldValue('district', null);
-            form.setFieldValue('ward', null);
-            form.setFieldValue('address', null);
-        }
+        form.setFieldsValue({
+            "provinceCode": selectedAddress?.province?.code,
+            "districtCode": selectedAddress?.district?.code,
+            "wardCode": selectedAddress?.ward?.code,
+            "address": selectedAddress?.detail,
+        });
     }, [selectedAddress])
 
 
     const handleCreate = () => {
         form.validateFields()
             .then((values) => {
-                return createOrder(values).unwrap()
+                if (data.length === 0) {
+                    message.warning("Danh sách sản phẩm không được để trống!");
+                    throw new Error("Danh sách sản phẩm không được để trống!");
+                }
+                const items = data.map((item) => ({
+                    productId: item.product.id,
+                    quantity: item.quantity,
+                    price: item.product.price,
+                }));
+                return createOrder({ 
+                    ...values, 
+                    items, 
+                    userId: selectedUser?.id,
+                    couponCode: selectedCoupon?.code,
+                    couponDiscount: selectedCoupon?.discount, 
+                }).unwrap()
             })
             .then((data) => {
                 message.success("Tạo đơn hàng thành công!");
@@ -269,7 +283,7 @@ const OrderCreate = () => {
                             <Typography.Title level={5}>Thông tin địa chỉ</Typography.Title>
                             <Form.Item
                                 label="Tỉnh/Thành phố"
-                                name="province"
+                                name="provinceCode"
                                 rules={[
                                     {
                                         required: true,
@@ -298,7 +312,7 @@ const OrderCreate = () => {
 
                             <Form.Item
                                 label="Quận/Huyện"
-                                name="district"
+                                name="districtCode"
                                 rules={[
                                     {
                                         required: true,
@@ -327,7 +341,7 @@ const OrderCreate = () => {
 
                             <Form.Item
                                 label="Xã/Phường"
-                                name="ward"
+                                name="wardCode"
                                 rules={[
                                     {
                                         required: true,
@@ -433,7 +447,7 @@ const OrderCreate = () => {
                     </Row>
                 </Form>
 
-                <Divider />
+                <Divider style={{borderWidth: 5}}/>
 
                 <Typography.Title level={5}>Sản phẩm</Typography.Title>
                 <OrderProduct

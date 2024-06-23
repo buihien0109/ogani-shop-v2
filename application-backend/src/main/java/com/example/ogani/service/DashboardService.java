@@ -77,7 +77,7 @@ public class DashboardService {
 
     public Integer calculateTotalPaymentVoucherInRangeTime(LocalDateTime start, LocalDateTime end) {
         return paymentVoucherRepository
-                .findByCreatedAtBetween(start, end)
+                .findByCreatedAtBetweenOrderByCreatedAtDesc(start, end)
                 .stream()
                 .mapToInt(PaymentVoucher::getAmount)
                 .sum();

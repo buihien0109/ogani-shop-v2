@@ -19,6 +19,31 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
 
+    @GetMapping("/public/products")
+    public ResponseEntity<?> getAllProductsByCategory(@RequestParam String parentSlug,
+                                                      @RequestParam(required = false) String subSlug,
+                                                      @RequestParam(required = false, defaultValue = "1") Integer page,
+                                                      @RequestParam(required = false, defaultValue = "10") Integer limit) {
+        return ResponseEntity.ok(productService.getAllProductsByCategory(page, limit, parentSlug, subSlug));
+    }
+
+    @GetMapping("/public/products/{id}/{slug}")
+    public ResponseEntity<?> getProductDetails(@PathVariable Integer id, @PathVariable String slug) {
+        return ResponseEntity.ok(productService.getProductDetails(id, slug));
+    }
+
+    @GetMapping("/public/products/{id}/related-products")
+    public ResponseEntity<?> getRelatedProducts(@PathVariable Integer id,
+                                                @RequestParam(required = false, defaultValue = "4") Integer limit) {
+        return ResponseEntity.ok(productService.getRelatedProducts(id, limit));
+    }
+
+    // available reviews
+    @GetMapping("/public/products/{id}/reviews")
+    public ResponseEntity<?> getAvailableReviewsByProduct(@PathVariable Integer id) {
+        return ResponseEntity.ok(reviewService.getAvailableReviewsByProduct(id));
+    }
+
     @GetMapping("/admin/products")
     public ResponseEntity<?> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());

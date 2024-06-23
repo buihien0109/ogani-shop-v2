@@ -23,8 +23,8 @@ const DiscountCampaignCreate = () => {
         form.validateFields()
             .then((values) => {
                 // TODO: Làm sao để mất giá trị giờ, phút giây trong LocalDateTime
-                const startDate = values.time[0];
-                const endDate = values.time[1];
+                const startDate = values.time[0].format("YYYY-MM-DDTHH:mm:ss");
+                const endDate = values.time[1].format("YYYY-MM-DDTHH:mm:ss");
                 let { time, ...data } = values;
                 data = { ...data, startDate, endDate };
                 console.log(data);

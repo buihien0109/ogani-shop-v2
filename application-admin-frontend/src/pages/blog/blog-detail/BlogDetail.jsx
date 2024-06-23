@@ -97,7 +97,6 @@ const BlogDetail = () => {
                 message.success("Cập nhật bài viết thành công!");
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };
@@ -162,7 +161,6 @@ const BlogDetail = () => {
                 setImageSelected(null);
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };

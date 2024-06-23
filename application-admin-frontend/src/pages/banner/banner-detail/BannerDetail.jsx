@@ -95,7 +95,6 @@ const BannerDetail = () => {
                 message.success("Cập nhật banner thành công!");
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };
@@ -160,7 +159,6 @@ const BannerDetail = () => {
                 setImageSelected(null);
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };

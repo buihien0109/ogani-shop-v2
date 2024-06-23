@@ -28,6 +28,11 @@ public class TagService {
         return tagRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
+    public Tag getTagBySlug(String slug) {
+        return tagRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tag có slug = " + slug));
+    }
+
     public Tag getTagById(Integer id) {
         return tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tag có id = " + id));

@@ -8,6 +8,7 @@ import com.example.ogani.model.enums.ReviewStatus;
 
 import java.time.LocalDateTime;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

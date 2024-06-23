@@ -20,7 +20,6 @@ function ProductImage({ productId, thumbnail, subImages }) {
                 message.success("Cập nhật ảnh sản phẩm thành công!");
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };

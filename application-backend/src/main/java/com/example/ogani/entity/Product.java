@@ -37,6 +37,7 @@ public class Product {
 
     Integer price;
     Integer stockQuantity;
+    Double rating;
 
     @Enumerated(EnumType.STRING)
     ProductStatus status;
@@ -67,6 +68,9 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
     Supplier supplier;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    List<ProductAttribute> attributes = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

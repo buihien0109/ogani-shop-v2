@@ -119,7 +119,6 @@ const UserDetail = () => {
 
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };
@@ -134,7 +133,6 @@ const UserDetail = () => {
                 );
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };
@@ -170,7 +168,6 @@ const UserDetail = () => {
                 setImageSelected(null);
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };

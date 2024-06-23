@@ -123,37 +123,34 @@ public class AuthService {
     }
 
     public void register(RegisterRequest request) {
-        // check email exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BadRequestException("Email đã tồn tại");
         }
 
-        // check password match
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new BadRequestException("Mật khẩu xác nhận không khớp với mật khẩu");
         }
 
-        // create new user
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new ResourceNotFoundException("Role không tồn tại"));
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRoles(Collections.singleton(userRole));
-        user.setAvatar(StringUtils.generateLinkImage(request.getName()));
-        user.setEnabled(false);
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .avatar(StringUtils.generateLinkImage(request.getName()))
+                .enabled(false)
+                .roles(Collections.singleton(userRole))
+                .build();
         userRepository.save(user);
         log.info("New user registered: {}", user);
 
-        // Create token confirm
-        TokenConfirm tokenConfirm = new TokenConfirm();
-        tokenConfirm.setToken(UUID.randomUUID().toString());
-        tokenConfirm.setUser(user);
-        tokenConfirm.setType(TokenType.EMAIL_VERIFICATION);
-        // set expiry date after 1 day
-        tokenConfirm.setExpiredAt(LocalDateTime.now().plusDays(1));
+        TokenConfirm tokenConfirm = TokenConfirm.builder()
+                .token(UUID.randomUUID().toString())
+                .user(user)
+                .type(TokenType.EMAIL_VERIFICATION)
+                .expiredAt(LocalDateTime.now().plusDays(1))
+                .build();
         tokenConfirmRepository.save(tokenConfirm);
         log.info("Token confirm created: {}", tokenConfirm);
 

@@ -6,12 +6,12 @@ export const reportApi = createApi({
     baseQuery: baseQuery,
     endpoints: (builder) => ({
         getReportData: builder.query({
-            query: ({start, end}) => {
+            query: ({ start, end }) => {
                 let params = {};
-                if(start) {
+                if (start) {
                     params.start = start;
                 }
-                if(end) {
+                if (end) {
                     params.end = end;
                 }
                 return {
@@ -21,10 +21,31 @@ export const reportApi = createApi({
                 };
             }
         }),
+        exportData: builder.query({
+            query: ({ start, end, type }) => {
+                let params = {};
+                if (start) {
+                    params.start = start;
+                }
+                if (end) {
+                    params.end = end;
+                }
+                if (type) {
+                    params.type = type;
+                }
+                return {
+                    url: `/reports/export`,
+                    method: "GET",
+                    params: params,
+                    responseHandler: "blob"
+                };
+            }
+        }),
     }),
 
 });
 
 export const {
-    useGetReportDataQuery
+    useGetReportDataQuery,
+    useLazyExportDataQuery,
 } = reportApi;

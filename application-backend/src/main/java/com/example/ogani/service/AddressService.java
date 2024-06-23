@@ -23,27 +23,21 @@ public class AddressService {
     private final DistrictRepository districtRepository;
     private final WardRepository wardRepository;
 
-    public AddressResponse getAddress(Optional<String> provinceCode, Optional<String> districtCode, Optional<String> wardCode) {
-        AddressResponse addressResponse = new AddressResponse();
-        if (provinceCode.isPresent()) {
-            Province province = provinceRepository.findByCode(provinceCode.get())
-                    .orElseThrow(() -> new ResourceNotFoundException("Not found province with code = " + provinceCode.get()));
-            addressResponse.setProvince(province);
-        }
+    public AddressResponse getAddress(String provinceCode, String districtCode, String wardCode) {
+        Province province = provinceRepository.findByCode(provinceCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tỉnh/thành phố với mã = " + provinceCode));
 
-        if (districtCode.isPresent()) {
-            District district = districtRepository.findByCode(districtCode.get())
-                    .orElseThrow(() -> new ResourceNotFoundException("Not found district with code = " + districtCode.get()));
-            addressResponse.setDistrict(district);
-        }
+        District district = districtRepository.findByCode(districtCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy quận/huyện với mã = " + districtCode));
 
-        if (wardCode.isPresent()) {
-            Ward ward = wardRepository.findByCode(wardCode.get())
-                    .orElseThrow(() -> new ResourceNotFoundException("Not found ward with code = " + wardCode.get()));
-            addressResponse.setWard(ward);
-        }
+        Ward ward = wardRepository.findByCode(wardCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy phường/xã với mã = " + wardCode));
 
-        return addressResponse;
+        return AddressResponse.builder()
+                .province(province)
+                .district(district)
+                .ward(ward)
+                .build();
     }
 
     public List<Province> getProvinces() {

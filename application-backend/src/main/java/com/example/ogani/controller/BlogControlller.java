@@ -15,9 +15,34 @@ import org.springframework.web.bind.annotation.*;
 public class BlogControlller {
     private final BlogService blogService;
 
+    @GetMapping("/public/blogs")
+    public ResponseEntity<?> getAllBlogs(@RequestParam(defaultValue = "1") Integer page,
+                                         @RequestParam(defaultValue = "10") Integer limit,
+                                         @RequestParam(required = false) String search,
+                                         @RequestParam(required = false) String tag) {
+        return ResponseEntity.ok(blogService.getAllBlogs(page, limit, search, tag));
+    }
+
+    @GetMapping("/public/blogs/latest-blogs")
+    public ResponseEntity<?> getLatestBlogs(@RequestParam(defaultValue = "5") Integer limit) {
+        return ResponseEntity.ok(blogService.getLatestBlogs(limit));
+    }
+
+    @GetMapping("/public/blogs/{id}/{slug}")
+    public ResponseEntity<?> getBlogDetails(@PathVariable Integer id,
+                                            @PathVariable String slug) {
+        return ResponseEntity.ok(blogService.getBlogDetails(id, slug));
+    }
+
+    @GetMapping("/public/blogs/{id}/recommend-blogs")
+    public ResponseEntity<?> getRecommendBlogs(@PathVariable Integer id,
+                                               @RequestParam(defaultValue = "5") Integer limit) {
+        return ResponseEntity.ok(blogService.getRecommendBlogs(id, limit));
+    }
+
     @GetMapping("/admin/blogs")
-    public ResponseEntity<?> getAllBlogs() {
-        return ResponseEntity.ok(blogService.getAllBlogs());
+    public ResponseEntity<?> getAllBlogsByAdmin() {
+        return ResponseEntity.ok(blogService.getAllBlogsByAdmin());
     }
 
     @GetMapping("/admin/blogs/own-blogs")

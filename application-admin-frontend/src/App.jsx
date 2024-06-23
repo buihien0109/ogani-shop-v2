@@ -14,6 +14,7 @@ import BlogCreate from "./pages/blog/blog-create/BlogCreate";
 import BlogDetail from "./pages/blog/blog-detail/BlogDetail";
 import BlogList from "./pages/blog/blog-list/BlogList";
 import OwnBlogList from "./pages/blog/own-blog/OwnBlogList";
+import CategoryList from "./pages/category/CategoryList";
 import CouponList from "./pages/coupon/CouponList";
 import Dashboard from "./pages/dashboard/dashboard/Dashboard";
 import DiscountCampaignCreate from "./pages/discount-campaign/discount-campaign-create/DiscountCampaignCreate";
@@ -21,6 +22,7 @@ import DiscountCampaignDetail from "./pages/discount-campaign/discount-campaign-
 import DiscountCampaignList from "./pages/discount-campaign/discount-campaign-list/DiscountCampaignList";
 import Login from "./pages/login/Login";
 import OrderCreate from "./pages/order/order-create/OrderCreate";
+import OrderDetail from "./pages/order/order-detail/OrderDetail";
 import OrderList from "./pages/order/order-list/OrderList";
 import PaymentVoucherCreate from "./pages/payment-voucher/payment-voucher-create/PaymentVoucherCreate";
 import PaymentVoucherDetail from "./pages/payment-voucher/payment-voucher-detail/PaymentVoucherDetail";
@@ -39,7 +41,6 @@ import TransactionList from "./pages/transaction/transaction-list/TransactionLis
 import UserCreate from "./pages/user/user-create/UserCreate";
 import UserDetail from "./pages/user/user-detail/UserDetail";
 import UserList from "./pages/user/user-list/UserList";
-import CategoryList from "./pages/category/CategoryList";
 
 function App() {
     const dispatch = useDispatch();
@@ -102,7 +103,7 @@ function App() {
                         </Route>
                         <Route path="orders">
                             <Route index element={<OrderList />} />
-                            {/* <Route path=":orderId/detail" element={<OrderDetail />} /> */}
+                            <Route path=":orderId/detail" element={<OrderDetail />} />
                             <Route path="create" element={<OrderCreate />} />
                         </Route>
                         <Route path="payment-vouchers">

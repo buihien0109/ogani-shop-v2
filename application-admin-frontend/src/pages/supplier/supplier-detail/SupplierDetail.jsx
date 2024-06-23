@@ -96,7 +96,6 @@ const SupplierDetail = () => {
                 message.success("Cập nhật thông tin nhà cung cấp thành công!");
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };
@@ -132,7 +131,6 @@ const SupplierDetail = () => {
                 setImageSelected(null);
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };

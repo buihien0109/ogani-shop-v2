@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PaymentVoucherRepository extends JpaRepository<PaymentVoucher, Integer> {
-    List<PaymentVoucher> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<PaymentVoucher> findByCreatedAtBetweenOrderByCreatedAtDesc(LocalDateTime start, LocalDateTime end);
 
     @Query("""
             SELECT new com.example.ogani.model.dto.ExpenseDto(

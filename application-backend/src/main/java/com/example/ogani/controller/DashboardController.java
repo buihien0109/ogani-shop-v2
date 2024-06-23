@@ -3,6 +3,7 @@ package com.example.ogani.controller;
 import com.example.ogani.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DashboardController {
     private final DashboardService dashboardService;
 
-    @RequestMapping("/admin/dashboard")
+    @GetMapping("/admin/dashboard")
     public ResponseEntity<?> getDashboardData() {
         return ResponseEntity.ok(dashboardService.getDashboardData());
     }

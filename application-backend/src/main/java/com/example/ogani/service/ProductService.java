@@ -5,17 +5,25 @@ import com.example.ogani.entity.Product;
 import com.example.ogani.entity.Supplier;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.ProductDto;
+import com.example.ogani.model.enums.ProductStatus;
+import com.example.ogani.model.mapper.ProductMapper;
 import com.example.ogani.model.request.UpdateProductImageRequest;
 import com.example.ogani.model.request.UpdateProductQuantityRequest;
 import com.example.ogani.model.request.UpsertProductRequest;
 import com.example.ogani.repository.CategoryRepository;
 import com.example.ogani.repository.ProductRepository;
 import com.example.ogani.repository.SupplierRepository;
+import com.example.ogani.specification.ProductSpecification;
 import com.example.ogani.utils.StringUtils;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,9 +37,23 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
     private final Slugify slugify;
+    private final ProductMapper productMapper;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll(Sort.by("createdAt").descending());
+    }
+
+    public Page<ProductDto> getAllProductsByCategory(Integer page, Integer limit, String parentCategorySlug, String subCategorySlug) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        Specification<Product> spec = ProductSpecification.getProducts(parentCategorySlug, subCategorySlug);
+
+        Page<Product> productPage = productRepository.findAll(spec, pageable);
+        return productPage.map(productMapper::toProductDto);
+    }
+
+    public Product getProductDetails(Integer id, String slug) {
+        return productRepository.findByIdAndSlugAndPublished(id, slug, true)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm có id = " + id));
     }
 
     public Product getProductById(Integer id) {
@@ -121,5 +143,16 @@ public class ProductService {
             product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
             productRepository.save(product);
         }
+    }
+
+    public List<ProductDto> getRelatedProducts(Integer id, Integer limit) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm có id = " + id));
+
+        List<Product> products = productRepository.findRelatedProducts(product.getId(), product.getCategory().getId(), true, ProductStatus.AVAILABLE);
+        if (products.size() > limit) {
+            products = products.subList(0, limit);
+        }
+        return products.stream().map(productMapper::toProductDto).toList();
     }
 }

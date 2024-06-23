@@ -16,7 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class TagController {
     private final TagService tagService;
 
-    @GetMapping("/admin/tags")
+    @GetMapping("/public/tags/{slug}")
+    public ResponseEntity<?> getTagBySlug(@PathVariable String slug) {
+        return ResponseEntity.ok(tagService.getTagBySlug(slug));
+    }
+
+    @GetMapping(value = {"/public/tags", "/admin/tags"})
     public ResponseEntity<?> getAllTagsByAdmin() {
         return ResponseEntity.ok(tagService.getAllTags());
     }
@@ -33,7 +38,7 @@ public class TagController {
 
     @PutMapping("/admin/tags/{id}")
     public ResponseEntity<?> updateTag(@PathVariable Integer id,
-                                         @Valid @RequestBody UpsertTagRequest request) {
+                                       @Valid @RequestBody UpsertTagRequest request) {
         return ResponseEntity.ok(tagService.updateTag(id, request));
     }
 

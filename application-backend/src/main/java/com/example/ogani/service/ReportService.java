@@ -3,6 +3,7 @@ package com.example.ogani.service;
 import com.example.ogani.entity.Order;
 import com.example.ogani.entity.PaymentVoucher;
 import com.example.ogani.exception.BadRequestException;
+import com.example.ogani.model.enums.ExportType;
 import com.example.ogani.model.enums.OrderStatus;
 import com.example.ogani.repository.OrderRepository;
 import com.example.ogani.repository.PaymentVoucherRepository;
@@ -22,6 +23,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -31,15 +33,14 @@ public class ReportService {
     private final PaymentVoucherRepository paymentVoucherRepository;
 
     public Map<String, Object> getReportData(String start, String end) {
+        log.info("Start date: {}, End date: {}", start, end);
         List<PaymentVoucher> paymentVouchers = getAllPaymentVouchers(start, end);
+        List<Order> orders = getAllOrders(start, end);
         return Map.of(
-                "totalRevenue", calculateOrderRevenueAmount(start, end),
+                "totalRevenue", calculateOrderRevenueAmount(orders),
                 "totalPayment", calculateTotalPaymentVoucherAmount(paymentVouchers),
-                "orders", getAllOrders(start, end),
-                "paymentVouchers", paymentVouchers,
-                "startDate", getStartDate(start),
-                "endDate", getEndDate(end)
-
+                "orders", orders,
+                "paymentVouchers", paymentVouchers
         );
     }
 
@@ -101,30 +102,12 @@ public class ReportService {
         LocalDateTime start = dateMap.get("start");
         LocalDateTime end = dateMap.get("end");
 
-        return paymentVoucherRepository.findByCreatedAtBetween(start, end);
+        return paymentVoucherRepository.findByCreatedAtBetweenOrderByCreatedAtDesc(start, end);
     }
 
-    public Integer calculateOrderRevenueAmount(String startDateString, String endDateString) {
-        Map<String, LocalDateTime> dateMap = getDate(startDateString, endDateString);
-        LocalDateTime start = dateMap.get("start");
-        LocalDateTime end = dateMap.get("end");
-
-        return orderRepository
-                .findByCreatedAtBetweenAndStatus(start, end, OrderStatus.COMPLETE)
-                .stream()
+    public Integer calculateOrderRevenueAmount(List<Order> orders) {
+        return orders.stream()
                 .mapToInt(Order::getTotalAmount)
-                .sum();
-    }
-
-    public Integer calculateTotalPaymentVoucherAmount(String startDateString, String endDateString) {
-        Map<String, LocalDateTime> dateMap = getDate(startDateString, endDateString);
-        LocalDateTime start = dateMap.get("start");
-        LocalDateTime end = dateMap.get("end");
-
-        return paymentVoucherRepository
-                .findByCreatedAtBetween(start, end)
-                .stream()
-                .mapToInt(PaymentVoucher::getAmount)
                 .sum();
     }
 
@@ -132,6 +115,13 @@ public class ReportService {
         return paymentVouchers.stream()
                 .mapToInt(PaymentVoucher::getAmount)
                 .sum();
+    }
+
+    public byte[] exportData(String startDateString, String endDateString, ExportType type) {
+        if (Objects.requireNonNull(type) == ExportType.EXCEL) {
+            return generateReport(startDateString, endDateString);
+        }
+        throw new BadRequestException("Loại export không hợp lệ");
     }
 
     public byte[] generateReport(String startDateString, String endDateString) {

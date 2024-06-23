@@ -64,6 +64,7 @@ import java.util.List;
                 """
 )
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -79,9 +80,18 @@ public class Order {
     String phone;
     String email;
 
-    String province;
-    String district;
-    String ward;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_code")
+    Province province;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_code")
+    District district;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ward_code")
+    Ward ward;
+
     String address;
 
     @Column(columnDefinition = "TEXT")
@@ -142,6 +152,16 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void removeOrderItem(OrderItem orderItem) {
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+    }
 
     @PrePersist
     public void prePersist() {

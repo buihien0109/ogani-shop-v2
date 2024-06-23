@@ -1,7 +1,5 @@
 package com.example.ogani.controller;
 
-import com.example.ogani.entity.District;
-import com.example.ogani.entity.Province;
 import com.example.ogani.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +16,9 @@ public class AddressController {
     private final AddressService addressService;
 
     @GetMapping
-    public ResponseEntity<?> getAddress(@RequestParam Optional<String> provinceCode,
-                                        @RequestParam Optional<String> districtCode,
-                                        @RequestParam Optional<String> wardCode) {
+    public ResponseEntity<?> getAddress(@RequestParam String provinceCode,
+                                        @RequestParam String districtCode,
+                                        @RequestParam String wardCode) {
         return ResponseEntity.ok(addressService.getAddress(provinceCode, districtCode, wardCode));
     }
 

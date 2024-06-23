@@ -24,20 +24,20 @@ const parseOrderStatus = (status) => {
 
 const parsePaymentMethod = (method) => {
     switch (method) {
-      case "COD":
-        return <Tag color="processing">COD</Tag>;
-      case "MOMO":
-        return <Tag color="warning">MOMO</Tag>;
-      case "VN_PAY":
-        return <Tag color="success">VNPAY</Tag>;
-      case "ZALO_PAY":
-        return <Tag color="blue">ZALO PAY</Tag>;
-      case "BANK_TRANSFER":
-        return <Tag color="volcano">Chuyển khoản ngân hàng</Tag>;
-      default:
-        return <Tag color="default">Không xác định</Tag>;
+        case "COD":
+            return <Tag color="processing">COD</Tag>;
+        case "MOMO":
+            return <Tag color="warning">MOMO</Tag>;
+        case "VN_PAY":
+            return <Tag color="success">VNPAY</Tag>;
+        case "ZALO_PAY":
+            return <Tag color="blue">ZALO PAY</Tag>;
+        case "BANK_TRANSFER":
+            return <Tag color="volcano">Chuyển khoản ngân hàng</Tag>;
+        default:
+            return <Tag color="default">Không xác định</Tag>;
     }
-  }
+}
 
 const columns = [
     {

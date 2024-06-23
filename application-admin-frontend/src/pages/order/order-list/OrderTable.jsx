@@ -57,7 +57,7 @@ const OrderTable = ({ data }) => {
             ...getColumnSearchProps('id'),
             render: (text, record, index) => {
                 return (
-                    <RouterLink to={`/admin/products/${record.id}/detail`}>
+                    <RouterLink to={`/admin/orders/${record.id}/detail`}>
                         {text}
                     </RouterLink>
                 );

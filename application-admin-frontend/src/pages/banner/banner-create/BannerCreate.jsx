@@ -119,7 +119,6 @@ const BannerCreate = () => {
                 setImageSelected(null);
             })
             .catch((error) => {
-                console.log(error);
                 message.error(error.data.message);
             });
     };

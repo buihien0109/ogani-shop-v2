@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

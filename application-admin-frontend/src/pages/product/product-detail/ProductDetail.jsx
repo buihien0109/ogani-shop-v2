@@ -64,7 +64,7 @@ const ProductDetail = () => {
                 message.success("Cập nhật thông tin sản phẩm thành công!");
             })
             .catch((error) => {
-                console.log(error);
+
                 message.error(error.data.message);
             });
     };

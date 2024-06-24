@@ -77,7 +77,7 @@ const ForgotPassword = () => {
                         <div className="reset-toggle-btn">
                           <div className="form-action-button">
                             <button type="submit" className="btn-sign-in">Xác nhận</button>
-                            <a href="/dang-nhap" id="customer_register_link">Quay lại đăng nhập</a>
+                            <Link to={"/dang-nhap"} id="customer_register_link">Quay lại đăng nhập</Link>
                           </div>
                         </div>
                       </div>

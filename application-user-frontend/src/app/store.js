@@ -2,10 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import { addressApi } from "./apis/address.api";
 import { authApi } from "./apis/auth.api";
 import { auth2Api } from "./apis/auth2.api";
+import { bannerApi } from "./apis/banner.api";
 import { blogApi } from "./apis/blog.api";
+import { cartApi } from "./apis/cart.api";
+import { cartItemApi } from "./apis/cartItem.api";
 import { categoryApi } from "./apis/category.api";
 import { favoriteApi } from "./apis/favorite.api";
 import { orderApi } from "./apis/order.api";
+import { productApi } from "./apis/product.api";
+import { reviewAnonymousApi } from "./apis/review.anonymous.api";
 import { reviewApi } from "./apis/review.api";
 import { tagApi } from "./apis/tag.api";
 import { userApi } from "./apis/user.api";
@@ -13,9 +18,9 @@ import { userAddressApi } from "./apis/userAddress.api";
 import { checkStatusMiddleware } from "./middlewares/tokenExpirationMiddleware";
 import addressReducer from "./slices/address.slice";
 import authReducer from "./slices/auth.slice";
+import cartReducer from "./slices/cart.slice";
 import categoryReducer from "./slices/category.slice";
-import { productApi } from "./apis/product.api";
-import { reviewAnonymousApi } from "./apis/review.anonymous.api";
+import favoriteReducer from "./slices/favorite.slice";
 
 const store = configureStore({
     reducer: {
@@ -32,9 +37,14 @@ const store = configureStore({
         [categoryApi.reducerPath]: categoryApi.reducer,
         [productApi.reducerPath]: productApi.reducer,
         [reviewAnonymousApi.reducerPath]: reviewAnonymousApi.reducer,
+        [cartApi.reducerPath]: cartApi.reducer,
+        [cartItemApi.reducerPath]: cartItemApi.reducer,
+        [bannerApi.reducerPath]: bannerApi.reducer,
         auth: authReducer,
         address: addressReducer,
         categories: categoryReducer,
+        favorites: favoriteReducer,
+        cart: cartReducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -51,6 +61,9 @@ const store = configureStore({
             categoryApi.middleware,
             productApi.middleware,
             reviewAnonymousApi.middleware,
+            cartApi.middleware,
+            cartItemApi.middleware,
+            bannerApi.middleware,
             checkStatusMiddleware
         ),
 });

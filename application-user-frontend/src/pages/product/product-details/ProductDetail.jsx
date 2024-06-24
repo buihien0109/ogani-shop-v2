@@ -1,9 +1,12 @@
 import 'rc-pagination/assets/index.css';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import breadcrumb from "../../../../public/breadcrumb.jpg";
+import { useAddFavoriteMutation, useCheckProductExistsInFavoriteQuery, useDeleteFavoriteMutation } from '../../../app/apis/favorite.api';
 import { useGetProductDetailQuery, useGetRelatedProductsQuery, useGetReviewsByProductQuery } from '../../../app/apis/product.api';
+import { addFavorite as addFavoriteLocal, deleteFavorite as deleteFavoriteLocal } from '../../../app/slices/favorite.slice';
 import ErrorPage from '../../../components/error/ErrorPage';
 import Loading from '../../../components/loading/Loading';
 import { MAX_RATING } from '../../../data/constants';
@@ -29,9 +32,19 @@ const parseProductStatus = (status) => {
 };
 
 function ProductDetail() {
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const { isAuthenticated } = useSelector(state => state.auth);
+    const favorites = useSelector(state => state.favorites);
     const { productId, productSlug } = useParams();
     const [shouldRefetch, setShouldRefetch] = useState(false);
     const [count, setCount] = useState(1);
+    const [isFavorite, setIsFavorite] = useState(() => {
+        if (!isAuthenticated) {
+            return favorites.some(id => id == productId);
+        }
+        return false;
+    });
 
     const {
         data: product,
@@ -49,6 +62,26 @@ function ProductDetail() {
         isLoading: isLoadingGetRelatedProducts,
         isError: isErrorGetRelatedProducts
     } = useGetRelatedProductsQuery({ productId })
+    const {
+        data: productExistsInFavorite,
+        isLoading: isLoadingCheckProductExistsInFavorite,
+        isError: isErrorCheckProductExistsInFavorite
+    } = useCheckProductExistsInFavoriteQuery(productId, { refetchOnMountOrArgChange: true, skip: !isAuthenticated });
+
+    const [addFavorite, { isLoading: isLoadingAddToFavorite }] = useAddFavoriteMutation();
+    const [deleteFavorite, { isLoading: isLoadingDeleteFavorite }] = useDeleteFavoriteMutation();
+
+    useEffect(() => {
+        if (isAuthenticated && productExistsInFavorite) {
+            setIsFavorite(productExistsInFavorite.isExists);
+        }
+    }, [productExistsInFavorite]);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setIsFavorite(favorites.some(id => id == productId));
+        }
+    }, [location])
 
     useEffect(() => {
         if (shouldRefetch) {
@@ -57,11 +90,11 @@ function ProductDetail() {
         }
     }, [shouldRefetch]);
 
-    if (isLoadingGetProduct || isLoadingGetReviews || isLoadingGetRelatedProducts) {
+    if (isLoadingGetProduct || isLoadingGetReviews || isLoadingGetRelatedProducts || isLoadingCheckProductExistsInFavorite) {
         return <Loading />
     }
 
-    if (isErrorGetProduct || isErrorGetReviews || isErrorGetRelatedProducts) {
+    if (isErrorGetProduct || isErrorGetReviews || isErrorGetRelatedProducts || isErrorCheckProductExistsInFavorite) {
         return <ErrorPage />
     }
 
@@ -78,6 +111,60 @@ function ProductDetail() {
         if (count > 1) {
             setCount(count => count - 1);
         }
+    }
+
+    const handleFavorite = (productId) => {
+        if (isAuthenticated) {
+            if (isFavorite) {
+                handleDeleteFavorite(productId);
+            } else {
+                handleAddFavorite(productId);
+            }
+        } else {
+            if (isFavorite) {
+                handleDeleteFromFavoriteLocal(productId);
+            } else {
+                handleAddFavoriteLocal(productId);
+            }
+        }
+    }
+
+    const handleAddFavorite = (productId) => {
+        addFavorite({ productId })
+            .unwrap()
+            .then((res) => {
+                toast.success("Thêm vào yêu thích thành công");
+                setIsFavorite(true);
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error(error.data.message)
+            });
+    }
+
+    const handleDeleteFavorite = (productId) => {
+        deleteFavorite(productId)
+            .unwrap()
+            .then((res) => {
+                toast.success("Loại khỏi yêu thích thành công");
+                setIsFavorite(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error(error.data.message)
+            });
+    }
+
+    const handleAddFavoriteLocal = (productId) => {
+        dispatch(addFavoriteLocal({ productId }));
+        toast.success("Thêm vào yêu thích thành công");
+        setIsFavorite(true);
+    }
+
+    const handleDeleteFromFavoriteLocal = (productId) => {
+        dispatch(deleteFavoriteLocal({ productId }));
+        toast.success("Loại khỏi yêu thích thành công");
+        setIsFavorite(false);
     }
 
 
@@ -125,13 +212,13 @@ function ProductDetail() {
                                     <span>(<span className="review-count d-inline-block m-0">{reviews.length}</span> đánh giá)</span>
                                 </div>
 
-                                <div className={`product__details__price ${product.discountPrice != null} ? 'has-discount' : ''`}>
+                                <div className={`product__details__price ${product.discountPrice != null ? 'has-discount' : ''}`}>
                                     {product.discountPrice != null && (
-                                        <span className={`${product.discountPrice != null} ? 'discount-price' : ''`}>
+                                        <span className={`${product.discountPrice != null ? 'discount-price' : ''}`}>
                                             {formatCurrency(product.discountPrice)}
                                         </span>
                                     )}
-                                    <span className={`${product.discountPrice != null} ? 'original-price' : ''`}>
+                                    <span className={`${product.discountPrice != null ? 'original-price' : ''}`}>
                                         {formatCurrency(product.price)}
                                     </span>
                                 </div>
@@ -156,8 +243,15 @@ function ProductDetail() {
                                             </div>
                                         </div>
                                         <button className="border-0 primary-btn btn-add-to-card">THÊM VÀO GIỎ HÀNG</button>
-                                        <button className="border-0 heart-icon btn-add-to-wishlist">
-                                            <span><i className="fa-regular fa-heart"></i></span>
+                                        <button
+                                            className="heart-icon btn-add-to-wishlist"
+                                            style={{
+                                                color: isFavorite ? "#7fad39" : "#6f6f6f",
+                                                border: isFavorite ? "1px solid #7fad39" : "1px solid transparent"
+                                            }}
+                                            onClick={() => handleFavorite(product.id)}
+                                        >
+                                            <span><i className="fa-solid fa-heart"></i></span>
                                         </button>
                                     </>
                                 )}
@@ -202,11 +296,15 @@ function ProductDetail() {
                                     <div className="tab-pane fade" id="tabs-1" role="tabpanel">
                                         <div className="product__details__tab__desc">
                                             <h6>Thông tin sản phẩm</h6>
-                                            {product.attributes.map(attribute => (
-                                                <p key={attribute.id}>
-                                                    <span>{attribute.name}:</span>&nbsp;
-                                                    <span>{attribute.value ?? "Đang cập nhật"}</span>
-                                                </p>
+                                            {product.attributes.map((attribute) => (
+                                                <div key={attribute.id} className='row'>
+                                                    <div className='col' style={{flex: "0 0 12%"}}>
+                                                        <p><b>{attribute.name}:</b></p>
+                                                    </div>
+                                                    <div className='col'>
+                                                        <p>{attribute.value ?? "Đang cập nhật"}</p>
+                                                    </div>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>

@@ -19,16 +19,18 @@ export const favoriteApi = createApi({
                     ...response,
                     content: response.content.map((favorite) => ({
                         ...favorite,
-                        movie: {
-                            ...favorite.movie,
-                            poster: favorite.movie.poster.startsWith("/api") ? `${DOMAIN}${favorite.movie.poster}` : favorite.movie.poster,
+                        product: {
+                            ...favorite.product,
+                            thumbnail: favorite.product.thumbnail.startsWith("/api")
+                                ? `${DOMAIN}${favorite.product.thumbnail}`
+                                : favorite.product.thumbnail,
                         }
                     })),
                 };
             },
             providesTags: ["Favorite"],
         }),
-        addToFavorite: builder.mutation({
+        addFavorite: builder.mutation({
             query: (data) => {
                 return {
                     url: "/favorites",
@@ -39,21 +41,21 @@ export const favoriteApi = createApi({
             invalidatesTags: ["Favorite"]
         }),
         deleteFavorite: builder.mutation({
-            query: (movieId) => {
+            query: (productId) => {
                 return {
                     url: `/favorites`,
                     method: "DELETE",
-                    params: { movieId }
+                    params: { productId }
                 }
             },
             invalidatesTags: ["Favorite"]
         }),
-        checkMovieInFavorite: builder.query({
-            query: (movieId) => {
+        checkProductExistsInFavorite: builder.query({
+            query: (productId) => {
                 return {
                     url: `/favorites/check-in-favorite`,
                     method: "GET",
-                    params: { movieId }
+                    params: { productId }
                 }
             },
         }),
@@ -62,7 +64,7 @@ export const favoriteApi = createApi({
 
 export const {
     useGetFavoritesByCurrentUserQuery,
-    useAddToFavoriteMutation,
+    useAddFavoriteMutation,
     useDeleteFavoriteMutation,
-    useCheckMovieInFavoriteQuery
+    useCheckProductExistsInFavoriteQuery
 } = favoriteApi;

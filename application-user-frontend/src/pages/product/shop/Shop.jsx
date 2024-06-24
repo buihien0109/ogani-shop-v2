@@ -5,10 +5,9 @@ import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import breadcrumb from "../../../../public/breadcrumb.jpg";
-import { useGetProductsQuery } from '../../../app/apis/product.api';
+import { useGetProductsByCategoryQuery } from '../../../app/apis/product.api';
 import ErrorPage from '../../../components/error/ErrorPage';
 import Loading from '../../../components/loading/Loading';
-import { formatCurrency } from '../../../utils/functionUtils';
 import ProductItem from '../../../components/product/ProductItem';
 
 function Shop() {
@@ -20,7 +19,7 @@ function Shop() {
     let limit = searchParams.get('limit') || 6;
     let sub = searchParams.get('sub');
 
-    const { data: productData, isLoading: isLoadingGetProducts, isError: isErrorGetProducts } = useGetProductsQuery({
+    const { data: productData, isLoading: isLoadingGetProducts, isError: isErrorGetProducts } = useGetProductsByCategoryQuery({
         page: page,
         limit: limit,
         parentSlug: parentSlug,
@@ -109,7 +108,7 @@ function Shop() {
                                     </div>
                                 </div>
                             )}
-                            <div className="row" style={{rowGap: 50}}>
+                            <div className="row" style={{ rowGap: 50 }}>
                                 {productData.totalElements === 0 && (
                                     <h4 className="font-italic">Sản phẩm đang được cập nhật</h4>
                                 )}
@@ -119,7 +118,7 @@ function Shop() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="d-flex justify-content-center align-items-center" style={{marginTop: 50}}>
+                            <div className="d-flex justify-content-center align-items-center" style={{ marginTop: 50 }}>
                                 {productData?.totalPages > 1 && (
                                     <Pagination
                                         current={page}

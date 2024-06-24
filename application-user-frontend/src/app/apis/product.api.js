@@ -8,6 +8,52 @@ export const productApi = createApi({
     tagTypes: ['Product', 'Review'],
     endpoints: (builder) => ({
         getProducts: builder.query({
+            query: ({ limit }) => {
+                const params = {};
+                if (limit) params.limit = limit;
+                return {
+                    url: `/products/all`,
+                    method: "GET",
+                    params: params
+                }
+            },
+            transformResponse: (response) => {
+                return response.map((item) => ({
+                    ...item,
+                    data: {
+                        ...item.data,
+                        content: item.data.content.map((product) => ({
+                            ...product,
+                            thumbnail: product.thumbnail.startsWith("/api") ? `${DOMAIN}${product.thumbnail}` : product.thumbnail,
+                            subImages: product.subImages.map((image) => image.startsWith("/api") ? `${DOMAIN}${image}` : image),
+                        }))
+                    }
+                }))
+            }
+        }),
+        getDiscountedProducts: builder.query({
+            query: ({ page, limit }) => {
+                const params = {};
+                if (page) params.page = page;
+                if (limit) params.limit = limit;
+                return {
+                    url: `/products/discount`,
+                    method: "GET",
+                    params: params
+                }
+            },
+            transformResponse: (response) => {
+                return {
+                    ...response,
+                    content: response.content.map((product) => ({
+                        ...product,
+                        thumbnail: product.thumbnail.startsWith("/api") ? `${DOMAIN}${product.thumbnail}` : product.thumbnail,
+                        subImages: product.subImages.map((image) => image.startsWith("/api") ? `${DOMAIN}${image}` : image),
+                    })),
+                };
+            }
+        }),
+        getProductsByCategory: builder.query({
             query: ({ page, limit, parentSlug, subSlug }) => {
                 const params = {};
                 if (page) params.page = page;
@@ -26,6 +72,7 @@ export const productApi = createApi({
                     content: response.content.map((product) => ({
                         ...product,
                         thumbnail: product.thumbnail.startsWith("/api") ? `${DOMAIN}${product.thumbnail}` : product.thumbnail,
+                        subImages: product.subImages.map((image) => image.startsWith("/api") ? `${DOMAIN}${image}` : image),
                     })),
                 };
             }
@@ -47,9 +94,9 @@ export const productApi = createApi({
                         ...review.user,
                         avatar: review.user.avatar.startsWith("/api") ? `${DOMAIN}${review.user.avatar}` : review.user.avatar,
                     } : null,
-                    authorAvatar: review.authorAvatar !== null 
-                    ? review.authorAvatar.startsWith("/api") ? `${DOMAIN}${review.authorAvatar}` : review.authorAvatar 
-                    : null,
+                    authorAvatar: review.authorAvatar !== null
+                        ? review.authorAvatar.startsWith("/api") ? `${DOMAIN}${review.authorAvatar}` : review.authorAvatar
+                        : null,
                 }))
             },
             providesTags: (result) =>
@@ -63,6 +110,7 @@ export const productApi = createApi({
                 return response.map((product) => ({
                     ...product,
                     thumbnail: product.thumbnail.startsWith("/api") ? `${DOMAIN}${product.thumbnail}` : product.thumbnail,
+                    subImages: product.subImages.map((image) => image.startsWith("/api") ? `${DOMAIN}${image}` : image),
                 }))
             }
         }),
@@ -71,6 +119,8 @@ export const productApi = createApi({
 
 export const {
     useGetProductsQuery,
+    useGetDiscountedProductsQuery,
+    useGetProductsByCategoryQuery,
     useGetProductDetailQuery,
     useGetReviewsByProductQuery,
     useGetRelatedProductsQuery

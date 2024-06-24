@@ -4,6 +4,8 @@ import com.example.ogani.model.enums.ProductStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -16,4 +18,8 @@ public class ProductDto {
     Integer discountPrice;
     ProductStatus status;
     String thumbnail;
+    List<String> subImages;
+    Integer stockQuantity;
+    String description;
+
 }

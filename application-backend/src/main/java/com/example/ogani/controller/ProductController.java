@@ -19,6 +19,17 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
 
+    @GetMapping("/public/products/all")
+    public ResponseEntity<?> getAllProducts(@RequestParam(required = false, defaultValue = "8") Integer limit) {
+        return ResponseEntity.ok(productService.getAllProductsByCategories(limit));
+    }
+
+    @GetMapping("/public/products/discount")
+    public ResponseEntity<?> getAllProductsDiscount(@RequestParam(required = false, defaultValue = "1") Integer page,
+                                                    @RequestParam(required = false, defaultValue = "8") Integer limit) {
+        return ResponseEntity.ok(productService.getAllDiscountedProducts(page, limit));
+    }
+
     @GetMapping("/public/products")
     public ResponseEntity<?> getAllProductsByCategory(@RequestParam String parentSlug,
                                                       @RequestParam(required = false) String subSlug,

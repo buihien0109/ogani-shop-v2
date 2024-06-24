@@ -45,6 +45,7 @@ function Header() {
     const dispatch = useDispatch();
     const { auth, isAuthenticated } = useSelector(state => state.auth)
     const categories = useSelector(state => state.categories)
+    const favorites = useSelector(state => state.favorites);
     const [showMenu, setShowMenu] = useState(false)
     const [logoutApi, { isLoading }] = useLogoutApiMutation()
 
@@ -205,7 +206,7 @@ function Header() {
                             <div className="d-flex align-items-center justify-content-end h-100">
                                 <div className="me-3 text-muted d-flex align-items-center">
                                     <span className="font-weight-bolder d-inline-block me-1">
-                                        <i class="fa-solid fa-envelope"></i>
+                                        <i className="fa-solid fa-envelope"></i>
                                     </span>
                                     <span>
                                         <Link to={"/bai-viet"} className="text-muted">Tin tức Ogani</Link>
@@ -213,7 +214,7 @@ function Header() {
                                 </div>
                                 <div className="text-muted d-flex align-items-center">
                                     <span className="font-weight-bolder d-inline-block me-1">
-                                        <i class="fa-solid fa-headphones-simple"></i>
+                                        <i className="fa-solid fa-headphones-simple"></i>
                                     </span>
                                     <span>
                                         <Link to={"#"} className="text-muted">Tư vấn mua hàng</Link>

@@ -14,7 +14,7 @@ function Footer() {
                     <div className="col-lg-3 col-md-6 col-sm-6">
                         <div className="footer__about footer__widget">
                             <div className="footer__about__logo">
-                                <a href="/"><img src={logo} alt="logo" /></a>
+                                <Link to={"/"}><img src={logo} alt="logo" /></Link>
                             </div>
                             <ul>
                                 <li>Địa chỉ: 132 Thanh Xuân, Hà Nội</li>
@@ -28,10 +28,10 @@ function Footer() {
                         <div className="footer__widget">
                             <h6>VỀ CHÚNG TÔI</h6>
                             <ul>
-                                <li><a href="#">Giới thiệu</a></li>
-                                <li><a href="#">Quản lý chất lượng</a></li>
-                                <li><a href="#">Chính sách bảo mật</a></li>
-                                <li><a href="#">Điều khoản và điều kiện giao dịch</a></li>
+                                <li><Link to={"#"}>Giới thiệu</Link></li>
+                                <li><Link to={"#"}>Quản lý chất lượng</Link></li>
+                                <li><Link to={"#"}>Chính sách bảo mật</Link></li>
+                                <li><Link to={"#"}>Điều khoản và điều kiện giao dịch</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -39,10 +39,10 @@ function Footer() {
                         <div className="footer__widget">
                             <h6>HỖ TRỢ KHÁCH HÀNG</h6>
                             <ul>
-                                <li><a href="#">Trung tâm hỗ trợ khách hàng</a></li>
-                                <li><a href="#">Chính sách giao hàng</a></li>
-                                <li><a href="#">Chính sách thanh toán</a></li>
-                                <li><a href="#">Chính sách đổi trả</a></li>
+                                <li><Link to={"#"}>Trung tâm hỗ trợ khách hàng</Link></li>
+                                <li><Link to={"#"}>Chính sách giao hàng</Link></li>
+                                <li><Link to={"#"}>Chính sách thanh toán</Link></li>
+                                <li><Link to={"#"}>Chính sách đổi trả</Link></li>
                             </ul>
                         </div>
                     </div>

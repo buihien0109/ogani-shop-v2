@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class CartService {
         Cart cart = cartRepository.findByUser_Id(user.getId()).orElseGet(() -> {
             Cart newCart = Cart.builder()
                     .user(user)
+                    .cartItems(new ArrayList<>())
                     .build();
             return cartRepository.save(newCart);
         });

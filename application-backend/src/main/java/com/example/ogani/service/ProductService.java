@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -43,8 +44,28 @@ public class ProductService {
         return productRepository.findAll(Sort.by("createdAt").descending());
     }
 
+    public List<Map<String, Object>> getAllProductsByCategories(Integer limit) {
+        List<Category> categories = categoryRepository.findByParentIsNull(Sort.by("createdAt").ascending());
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Category category : categories) {
+            Page<ProductDto> productPage = getAllProductsByCategory(1, limit, category.getSlug(), null);
+            Map<String, Object> data = Map.of(
+                    "category", category,
+                    "data", productPage
+            );
+            result.add(data);
+        }
+        return result;
+    }
+
+    public Page<ProductDto> getAllDiscountedProducts(Integer page, Integer limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
+        Page<Product> pageData = productRepository.findDiscountedProducts(pageable);
+        return pageData.map(productMapper::toProductDto);
+    }
+
     public Page<ProductDto> getAllProductsByCategory(Integer page, Integer limit, String parentCategorySlug, String subCategorySlug) {
-        Pageable pageable = PageRequest.of(page - 1, limit);
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
         Specification<Product> spec = ProductSpecification.getProducts(parentCategorySlug, subCategorySlug);
 
         Page<Product> productPage = productRepository.findAll(spec, pageable);

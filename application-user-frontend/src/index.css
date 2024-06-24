@@ -959,8 +959,8 @@ ol {
 -----------------------*/
 
 .featured {
-    padding-top: 80px;
-    padding-bottom: 40px;
+    padding-top: 60px;
+    padding-bottom: 60px;
 }
 
 .featured > .container:first-child .section-title {
@@ -1096,7 +1096,7 @@ ol {
 }
 
 .featured .loadmore-icon {
-    font-size: 18px;
+    font-size: 12px;
     margin-left: 8px;
 }
 
@@ -1485,9 +1485,14 @@ ol {
     margin-right: 0;
 }
 
-.product__item__pic__hover li:hover span {
+.product__item__pic__hover li:hover span,
+.product__item__pic__hover li.active span {
     background: #7fad39;
     border-color: #7fad39;
+}
+
+.product__item__pic__hover li.active span i {
+    color: #ffffff;
 }
 
 .product__item__pic__hover li:hover span i {
@@ -1687,8 +1692,24 @@ ol {
     color: #7fad39;
 }
 
+.product__item__pic::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    z-index: 1;
+}
+
+.product__item:hover .product__item__pic::before {
+    opacity: 1;
+}
+
 .product__item:hover .product__item__pic .product__item__pic__hover {
-    bottom: 20px;
+    bottom: calc(50% - 20px);
 }
 
 .product__item__pic {
@@ -1708,6 +1729,7 @@ ol {
     -ms-transition: all, 0.5s;
     -o-transition: all, 0.5s;
     transition: all, 0.5s;
+    z-index: 2;
 }
 
 .product__item__pic__hover li {
@@ -1782,9 +1804,6 @@ ol {
 
 .product__item__text h6 {
     margin-bottom: 10px;
-}
-
-.product__item__text h6 a {
     color: #252525;
 }
 
@@ -1850,6 +1869,13 @@ ol {
     border: 2px solid #eee;
 }
 
+#modal-product-overview .product__details__pic__item img {
+    max-width: 100%;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
 .product__details__pic__item img {
     max-width: 100%;
     width: 100%;
@@ -1903,7 +1929,7 @@ ol {
     color: #6f6f6f;
     font-weight: 400;
     text-decoration: line-through;
-    font-size: 24px;
+    font-size: 20px;
     margin-left: 10px;
 }
 
@@ -1914,7 +1940,7 @@ ol {
 .product__details__text .primary-btn {
     padding: 16px 28px 14px;
     margin-right: 6px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
 }
 
 .product__details__text .primary-btn:hover {
@@ -1945,11 +1971,13 @@ ol {
     color: #1c1c1c;
     list-style: none;
     line-height: 36px;
+    display: flex;
+    align-items: center;
 }
 
 .product__details__text ul li b {
     font-weight: 700;
-    width: 170px;
+    width: 90px;
     display: inline-block;
 }
 
@@ -1985,7 +2013,7 @@ ol {
     position: relative;
     text-align: center;
     background: #f5f5f5;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
 }
 
 .pro-qty input {

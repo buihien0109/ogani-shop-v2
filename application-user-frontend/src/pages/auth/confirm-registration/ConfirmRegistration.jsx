@@ -35,7 +35,7 @@ function ConfirmRegistration() {
                         <div className="col-lg-12 text-center">
                             <div className="breadcrumb__text">
                                 <div className="breadcrumb__option">
-                                    <a href="/">Trang chủ</a>
+                                    <Link to={"/"}>Trang chủ</Link>
                                     <span>Xác thực tài khoản</span>
                                 </div>
                             </div>

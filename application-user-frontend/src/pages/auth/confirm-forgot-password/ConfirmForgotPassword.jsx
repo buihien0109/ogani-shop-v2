@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import breadcrumb from "../../../../public/breadcrumb.jpg";
@@ -73,7 +73,7 @@ const ConfirmForgotPassword = () => {
             <div className="col-lg-12 text-center">
               <div className="breadcrumb__text">
                 <div className="breadcrumb__option">
-                  <a href="/">Trang chủ</a>
+                  <Link to={"/"}>Trang chủ</Link>
                   <span>Đặt lại mật khẩu</span>
                 </div>
               </div>

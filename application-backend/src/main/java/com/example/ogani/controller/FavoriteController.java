@@ -2,8 +2,6 @@ package com.example.ogani.controller;
 
 import com.example.ogani.entity.Favorite;
 import com.example.ogani.model.request.AddFavoriteRequest;
-import com.example.ogani.model.request.AddToCartRequest;
-import com.example.ogani.service.CartService;
 import com.example.ogani.service.FavoriteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +20,8 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @GetMapping("/favorites/check-in-favorite")
-    public ResponseEntity<?> checkMovieInFavorite(@RequestParam Integer movieId) {
-        Boolean isExists = favoriteService.checkProductExistsInFavorite(movieId);
+    public ResponseEntity<?> checkProductExistsInFavorite(@RequestParam Integer productId) {
+        Boolean isExists = favoriteService.checkProductExistsInFavorite(productId);
         Map<String, Boolean> response = new HashMap<>();
         response.put("isExists", isExists);
         return ResponseEntity.ok(response);
@@ -42,8 +40,8 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/favorites")
-    public ResponseEntity<?> deleteFromFavorite(@RequestParam Integer movieId) {
-        favoriteService.deleteFromFavorite(movieId);
+    public ResponseEntity<?> deleteFromFavorite(@RequestParam Integer productId) {
+        favoriteService.deleteFromFavorite(productId);
         return ResponseEntity.noContent().build();
     }
 }

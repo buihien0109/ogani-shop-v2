@@ -20,7 +20,7 @@ public class BannerController {
         return ResponseEntity.ok(bannerService.getAllBanners());
     }
 
-    @GetMapping("/admin/banners/active")
+    @GetMapping(value = {"/admin/banners/active", "/public/banners"})
     public ResponseEntity<?> getAllBannersActive() {
         return ResponseEntity.ok(bannerService.getAllBannersActive());
     }

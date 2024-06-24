@@ -1,10 +1,8 @@
 package com.example.ogani;
 
 import com.example.ogani.constant.ConstantValue;
-import com.example.ogani.entity.Image;
-import com.example.ogani.entity.User;
-import com.example.ogani.repository.ImageRepository;
-import com.example.ogani.repository.UserRepository;
+import com.example.ogani.entity.*;
+import com.example.ogani.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @SpringBootTest
 class OganiShopApplicationTests {
@@ -21,6 +22,14 @@ class OganiShopApplicationTests {
     private UserRepository userRepository;
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private BlogRepository blogRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Test
     void save_images() {
@@ -56,5 +65,112 @@ class OganiShopApplicationTests {
                 }
             }
         }
+    }
+
+    @Test
+    void random_date_products() {
+        List<Product> products = productRepository.findAll();
+
+        for (Product product : products) {
+            LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime randomDate = randomDateTime(startDate, endDate);
+            product.setCreatedAt(randomDate);
+            product.setUpdatedAt(randomDate);
+
+            if(product.getPublished()) {
+                product.setPublishedAt(randomDate);
+            } else {
+                product.setPublishedAt(null);
+            }
+            productRepository.save(product);
+        }
+    }
+
+    @Test
+    void random_date_blogs() {
+        List<Blog> blogs = blogRepository.findAll();
+
+        for (Blog blog : blogs) {
+            LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime randomDate = randomDateTime(startDate, endDate);
+            blog.setCreatedAt(randomDate);
+            blog.setUpdatedAt(randomDate);
+
+            if(blog.getStatus()) {
+                blog.setPublishedAt(randomDate);
+            } else {
+                blog.setPublishedAt(null);
+            }
+            blogRepository.save(blog);
+        }
+    }
+
+    @Test
+    void random_date_users() {
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime randomDate = randomDateTime(startDate, endDate);
+            user.setCreatedAt(randomDate);
+            user.setUpdatedAt(randomDate);
+            userRepository.save(user);
+        }
+    }
+
+    @Test
+    void random_date_images() {
+        List<Image> images = imageRepository.findAll();
+
+        for (Image image : images) {
+            LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime randomDate = randomDateTime(startDate, endDate);
+            image.setCreatedAt(randomDate);
+            imageRepository.save(image);
+        }
+    }
+
+    @Test
+    void random_date_transactions() {
+        List<Transaction> transactions = transactionRepository.findAll();
+
+        for (Transaction transaction : transactions) {
+            LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime randomDate = randomDateTime(startDate, endDate);
+            transaction.setCreatedAt(randomDate);
+            transaction.setUpdatedAt(randomDate);
+            transactionRepository.save(transaction);
+        }
+    }
+
+    @Test
+    void random_date_reviews() {
+        List<Review> reviews = reviewRepository.findAll();
+
+        for (Review review : reviews) {
+            LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime randomDate = randomDateTime(startDate, endDate);
+            review.setCreatedAt(randomDate);
+            review.setUpdatedAt(randomDate);
+            reviewRepository.save(review);
+        }
+    }
+
+    public static LocalDateTime randomDateTime(LocalDateTime startDate, LocalDateTime endDate) {
+        // Convert the start and end dates to epoch seconds
+        long startEpochSecond = startDate.toEpochSecond(ZoneOffset.UTC);
+        long endEpochSecond = endDate.toEpochSecond(ZoneOffset.UTC);
+
+        // Generate a random epoch second value between the start and end dates
+        long randomEpochSecond = ThreadLocalRandom.current().nextLong(startEpochSecond, endEpochSecond);
+
+        // Convert the random epoch second value back to LocalDateTime
+        return LocalDateTime.ofEpochSecond(randomEpochSecond, 0, ZoneOffset.UTC);
     }
 }

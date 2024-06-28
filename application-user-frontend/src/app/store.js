@@ -21,6 +21,8 @@ import authReducer from "./slices/auth.slice";
 import cartReducer from "./slices/cart.slice";
 import categoryReducer from "./slices/category.slice";
 import favoriteReducer from "./slices/favorite.slice";
+import { couponApi } from "./apis/coupon.api";
+import { orderAnonymousApi } from "./apis/order.anonymous.api";
 
 const store = configureStore({
     reducer: {
@@ -40,6 +42,8 @@ const store = configureStore({
         [cartApi.reducerPath]: cartApi.reducer,
         [cartItemApi.reducerPath]: cartItemApi.reducer,
         [bannerApi.reducerPath]: bannerApi.reducer,
+        [couponApi.reducerPath]: couponApi.reducer,
+        [orderAnonymousApi.reducerPath]: orderAnonymousApi.reducer,
         auth: authReducer,
         address: addressReducer,
         categories: categoryReducer,
@@ -64,6 +68,8 @@ const store = configureStore({
             cartApi.middleware,
             cartItemApi.middleware,
             bannerApi.middleware,
+            couponApi.middleware,
+            orderAnonymousApi.middleware,
             checkStatusMiddleware
         ),
 });

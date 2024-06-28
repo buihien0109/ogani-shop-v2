@@ -10,6 +10,7 @@ import com.example.ogani.repository.UserAddressRepository;
 import com.example.ogani.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class UserAddressService {
             User user = SecurityUtils.getCurrentUserLogin();
             return userAddressRepository.findByUser_Id(user.getId());
         } else {
-            return userAddressRepository.findByUser_Id(userId);
+            return userAddressRepository.findByUser_IdOrderByIsDefaultDesc(userId);
         }
     }
 

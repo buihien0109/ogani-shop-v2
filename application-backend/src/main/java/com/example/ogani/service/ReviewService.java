@@ -5,7 +5,9 @@ import com.example.ogani.entity.Review;
 import com.example.ogani.entity.User;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.ReviewDto;
 import com.example.ogani.model.enums.ReviewStatus;
+import com.example.ogani.model.mapper.ReviewMapper;
 import com.example.ogani.model.request.CreateReviewAnonymousRequest;
 import com.example.ogani.model.request.UpsertReviewRequest;
 import com.example.ogani.model.request.UpsertReviewRequestAdmin;
@@ -27,9 +29,14 @@ import java.util.List;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
+    private final ReviewMapper reviewMapper;
 
-    public List<Review> getAvailableReviewsByProduct(Integer id) {
-        return reviewRepository.findByProduct_IdAndStatus(id, ReviewStatus.ACCEPTED, Sort.by("createdAt").descending());
+    public List<ReviewDto> getAvailableReviewsByProduct(Integer id) {
+        List<Review> reviews = reviewRepository.findByProduct_IdAndStatus(id, ReviewStatus.ACCEPTED,
+                Sort.by("createdAt").descending());
+        return reviews.stream()
+                .map(reviewMapper::toReviewDto)
+                .toList();
     }
 
     public List<Review> getReviewsByProduct(Integer productId) {

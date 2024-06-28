@@ -5,6 +5,8 @@ import com.example.ogani.entity.Product;
 import com.example.ogani.entity.User;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.FavoriteDto;
+import com.example.ogani.model.mapper.FavoriteMapper;
 import com.example.ogani.model.request.AddFavoriteRequest;
 import com.example.ogani.repository.FavoriteRepository;
 import com.example.ogani.repository.ProductRepository;
@@ -17,20 +19,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final ProductRepository productRepository;
+    private final FavoriteMapper favoriteMapper;
 
-    public Page<Favorite> getFavoritesByCurrentUser(Integer page, Integer limit) {
+    public Page<FavoriteDto> getFavoritesByCurrentUser(Integer page, Integer limit) {
         User user = SecurityUtils.getCurrentUserLogin();
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
-        return favoriteRepository.findByUser_Id(user.getId(), pageable);
+        Page<Favorite> pageData = favoriteRepository.findByUser_Id(user.getId(), pageable);
+        return pageData.map(favoriteMapper::toFavoriteDto);
     }
 
-    public Favorite addToFavorite(AddFavoriteRequest request) {
+    public List<FavoriteDto> getFavorites() {
+        User user = SecurityUtils.getCurrentUserLogin();
+        List<Favorite> favorites = favoriteRepository.findByUser_Id(user.getId(), Sort.by("createdAt").descending());
+        return favorites.stream()
+                .map(favoriteMapper::toFavoriteDto)
+                .toList();
+    }
+
+    public FavoriteDto addToFavorite(AddFavoriteRequest request) {
         User user = SecurityUtils.getCurrentUserLogin();
 
         Product product = productRepository.findById(request.getProductId())
@@ -45,7 +59,8 @@ public class FavoriteService {
                 .user(user)
                 .build();
 
-        return favoriteRepository.save(favorite);
+        favoriteRepository.save(favorite);
+        return favoriteMapper.toFavoriteDto(favorite);
     }
 
     public void deleteFromFavorite(Integer productId) {

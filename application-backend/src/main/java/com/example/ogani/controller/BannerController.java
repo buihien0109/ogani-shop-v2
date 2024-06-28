@@ -15,14 +15,19 @@ import org.springframework.web.bind.annotation.*;
 public class BannerController {
     private final BannerService bannerService;
 
+    @GetMapping("/public/banners")
+    public ResponseEntity<?> getAllBannersActive() {
+        return ResponseEntity.ok(bannerService.getAllBannersActive());
+    }
+
     @GetMapping("/admin/banners")
     public ResponseEntity<?> getAllBanners() {
         return ResponseEntity.ok(bannerService.getAllBanners());
     }
 
-    @GetMapping(value = {"/admin/banners/active", "/public/banners"})
-    public ResponseEntity<?> getAllBannersActive() {
-        return ResponseEntity.ok(bannerService.getAllBannersActive());
+    @GetMapping("/admin/banners/active")
+    public ResponseEntity<?> getAllBannersActiveByAdmin() {
+        return ResponseEntity.ok(bannerService.getAllBannersActiveByAdmin());
     }
 
     @GetMapping("/admin/banners/{id}")

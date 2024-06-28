@@ -2,8 +2,10 @@ package com.example.ogani.model.request;
 
 import com.example.ogani.model.enums.OrderPaymentMethod;
 import com.example.ogani.model.enums.OrderShippingMethod;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,9 +24,11 @@ public class AdminCreateOrderRequest {
     String name;
 
     @NotEmpty(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "0[0-9]{9}", message = "Số điện thoại không hợp lệ")
     String phone;
 
     @NotEmpty(message = "Email không được để trống")
+    @Email(message = "Email không hợp lệ")
     String email;
 
     @NotEmpty(message = "Tỉnh/Thành phố không được để trống")

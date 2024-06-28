@@ -27,4 +27,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("SELECT p FROM Product p JOIN p.discounts d WHERE p.published = true AND p.status = 'AVAILABLE' AND d.status = true and d.startDate <= current_date and d.endDate >= current_date")
     Page<Product> findDiscountedProducts(Pageable pageable);
+
+    List<Product> findByIdIn(List<Integer> ids);
 }

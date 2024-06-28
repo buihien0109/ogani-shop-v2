@@ -1,82 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useAddFavoriteMutation, useDeleteFavoriteMutation } from '../../app/apis/favorite.api';
-import { addFavorite as addFavoriteLocal, deleteFavorite as deleteFavoriteLocal } from '../../app/slices/favorite.slice';
+import useFavorite from '../../hooks/useFavorite';
 import { formatCurrency } from '../../utils/functionUtils';
 import ModalProductOverview from './ModalProductOverview';
 
 function ProductItem({ product }) {
-    const dispatch = useDispatch();
-    const { isAuthenticated } = useSelector(state => state.auth);
-    const favorites = useSelector(state => state.favorites);
     const [showModal, setShowModal] = useState(false);
-    const [isFavorite, setIsFavorite] = useState(() => {
-        if (!isAuthenticated) {
-            return favorites.some(id => id == product.id);
-        }
-        return false;
-    });
-    const [addFavorite, { isLoading: isLoadingAddToFavorite }] = useAddFavoriteMutation();
-    const [deleteFavorite, { isLoading: isLoadingDeleteFavorite }] = useDeleteFavoriteMutation();
-
-    const handleFavorite = (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        if (isAuthenticated) {
-            if (isFavorite) {
-                handleDeleteFavorite(product.id);
-            } else {
-                handleAddFavorite(product.id);
-            }
-        } else {
-            if (isFavorite) {
-                handleDeleteFromFavoriteLocal(product.id);
-            } else {
-                handleAddFavoriteLocal(product.id);
-            }
-        }
-    }
-
-    const handleAddFavorite = (productId) => {
-        addFavorite({ productId })
-            .unwrap()
-            .then((res) => {
-                toast.success("Thêm vào yêu thích thành công");
-                setIsFavorite(true);
-            })
-            .catch((error) => {
-                console.log(error);
-                toast.error(error.data.message)
-            });
-    }
-
-    const handleDeleteFavorite = (productId) => {
-        deleteFavorite(productId)
-            .unwrap()
-            .then((res) => {
-                toast.success("Loại khỏi yêu thích thành công");
-                setIsFavorite(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                toast.error(error.data.message)
-            });
-    }
-
-    const handleAddFavoriteLocal = (productId) => {
-        dispatch(addFavoriteLocal({ productId }));
-        toast.success("Thêm vào yêu thích thành công");
-        setIsFavorite(true);
-    }
-
-    const handleDeleteFromFavoriteLocal = (productId) => {
-        dispatch(deleteFavoriteLocal({ productId }));
-        toast.success("Loại khỏi yêu thích thành công");
-        setIsFavorite(false);
-    }
-
+    const { isFavorite, handleFavorite } = useFavorite(product.id);
 
     const handleShowProductOverview = (event) => {
         event.stopPropagation();
@@ -91,7 +21,13 @@ function ProductItem({ product }) {
                     style={{ backgroundImage: `url(${product.thumbnail})` }}
                 >
                     <ul className="product__item__pic__hover">
-                        <li onClick={handleFavorite} className={`${isFavorite ? "active" : ""}`}>
+                        <li
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                handleFavorite();
+                            }}
+                            className={`${isFavorite ? "active" : ""}`}>
                             <span><i className="fa-solid fa-heart"></i></span>
                         </li>
                         <li onClick={handleShowProductOverview}>

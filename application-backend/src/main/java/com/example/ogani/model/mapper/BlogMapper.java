@@ -1,6 +1,7 @@
 package com.example.ogani.model.mapper;
 
 import com.example.ogani.entity.Blog;
+import com.example.ogani.model.dto.BlogDetailsDto;
 import com.example.ogani.model.dto.BlogDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -13,5 +14,9 @@ public class BlogMapper {
 
     public BlogDto toBlogDto(Blog blog) {
         return modelMapper.map(blog, BlogDto.class);
+    }
+
+    public BlogDetailsDto toBlogDetailsDto(Blog blog) {
+        return modelMapper.map(blog, BlogDetailsDto.class);
     }
 }

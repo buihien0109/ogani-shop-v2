@@ -2,6 +2,8 @@ package com.example.ogani.model.mapper;
 
 import com.example.ogani.entity.DiscountCampaign;
 import com.example.ogani.entity.Product;
+import com.example.ogani.model.dto.ProductAttributeDto;
+import com.example.ogani.model.dto.ProductDetailsDto;
 import com.example.ogani.model.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,8 +18,17 @@ public class ProductMapper {
 
     public ProductDto toProductDto(Product product) {
         ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        productDto.setDiscountPrice(getDiscountPrice(product));
+        return productDto;
+    }
 
-        // Tính toán giá giảm giá
+    public ProductDetailsDto toProductDetailsDto(Product product) {
+        ProductDetailsDto productDetailsDto = modelMapper.map(product, ProductDetailsDto.class);
+        productDetailsDto.setDiscountPrice(getDiscountPrice(product));
+        return productDetailsDto;
+    }
+
+    private Integer getDiscountPrice(Product product) {
         Integer originalPrice = product.getPrice();
         Integer discountPrice = null;
         for (DiscountCampaign discount : product.getDiscounts()) {
@@ -29,7 +40,6 @@ public class ProductMapper {
                 };
             }
         }
-        productDto.setDiscountPrice(discountPrice);
-        return productDto;
+        return discountPrice;
     }
 }

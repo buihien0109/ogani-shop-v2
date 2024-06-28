@@ -4,6 +4,8 @@ import com.example.ogani.entity.Blog;
 import com.example.ogani.entity.Tag;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.TagDto;
+import com.example.ogani.model.mapper.TagMapper;
 import com.example.ogani.model.request.UpsertTagRequest;
 import com.example.ogani.repository.BlogRepository;
 import com.example.ogani.repository.TagRepository;
@@ -23,14 +25,23 @@ public class TagService {
     private final TagRepository tagRepository;
     private final BlogRepository blogRepository;
     private final Slugify slugify;
+    private final TagMapper tagMapper;
 
-    public List<Tag> getAllTags() {
+    public List<TagDto> getAllTags() {
+        List<Tag> tags = tagRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        return tags.stream()
+                .map(tagMapper::toTagDto)
+                .toList();
+    }
+
+    public List<Tag> getAllTagsByAdmin() {
         return tagRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
-    public Tag getTagBySlug(String slug) {
-        return tagRepository.findBySlug(slug)
+    public TagDto getTagBySlug(String slug) {
+        Tag tag = tagRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tag có slug = " + slug));
+        return tagMapper.toTagDto(tag);
     }
 
     public Tag getTagById(Integer id) {

@@ -49,8 +49,7 @@ public class AuthControlller {
     }
 
     @PostMapping("/public/auth/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) throws InterruptedException {
-        Thread.sleep(100000);
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.ok().build();
     }

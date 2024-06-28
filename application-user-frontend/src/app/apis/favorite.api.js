@@ -6,27 +6,21 @@ export const favoriteApi = createApi({
     reducerPath: "favoriteApi",
     baseQuery: baseQueryAuth,
     endpoints: (builder) => ({
-        getFavoritesByCurrentUser: builder.query({
-            query: ({ page, limit }) => {
+        getFavorites: builder.query({
+            query: () => {
                 return {
                     url: "/favorites",
-                    method: "GET",
-                    params: { page, limit }
+                    method: "GET"
                 }
             },
             transformResponse: (response) => {
-                return {
-                    ...response,
-                    content: response.content.map((favorite) => ({
-                        ...favorite,
-                        product: {
-                            ...favorite.product,
-                            thumbnail: favorite.product.thumbnail.startsWith("/api")
-                                ? `${DOMAIN}${favorite.product.thumbnail}`
-                                : favorite.product.thumbnail,
-                        }
-                    })),
-                };
+                return response.map((favorite) => ({
+                    ...favorite.product,
+                    thumbnail: favorite.product.thumbnail.startsWith("/api")
+                        ? `${DOMAIN}${favorite.product.thumbnail}`
+                        : favorite.product.thumbnail,
+                    subImages: favorite.product.subImages.map((subImage) => subImage.startsWith("/api") ? `${DOMAIN}${subImage}` : subImage)
+                }))
             },
             providesTags: ["Favorite"],
         }),
@@ -63,7 +57,7 @@ export const favoriteApi = createApi({
 });
 
 export const {
-    useGetFavoritesByCurrentUserQuery,
+    useGetFavoritesQuery,
     useAddFavoriteMutation,
     useDeleteFavoriteMutation,
     useCheckProductExistsInFavoriteQuery

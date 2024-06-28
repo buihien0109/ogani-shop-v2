@@ -5,6 +5,7 @@ import com.example.ogani.entity.Product;
 import com.example.ogani.entity.Supplier;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.ProductDetailsDto;
 import com.example.ogani.model.dto.ProductDto;
 import com.example.ogani.model.enums.ProductStatus;
 import com.example.ogani.model.mapper.ProductMapper;
@@ -72,9 +73,15 @@ public class ProductService {
         return productPage.map(productMapper::toProductDto);
     }
 
-    public Product getProductDetails(Integer id, String slug) {
-        return productRepository.findByIdAndSlugAndPublished(id, slug, true)
+    public List<ProductDto> getAllProductsInIds(List<Integer> ids) {
+        List<Product> products = productRepository.findByIdIn(ids);
+        return products.stream().map(productMapper::toProductDto).toList();
+    }
+
+    public ProductDetailsDto getProductDetails(Integer id, String slug) {
+        Product product = productRepository.findByIdAndSlugAndPublished(id, slug, true)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm có id = " + id));
+        return productMapper.toProductDetailsDto(product);
     }
 
     public Product getProductById(Integer id) {

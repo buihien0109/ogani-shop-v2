@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class CouponController {
     private final CouponService couponService;
 
-    @GetMapping("/coupons/{code}/check")
+    @GetMapping("/public/coupons/{code}/check")
     public ResponseEntity<?> checkCoupon(@PathVariable String code) {
         return ResponseEntity.ok(couponService.checkCouponValid(code));
     }

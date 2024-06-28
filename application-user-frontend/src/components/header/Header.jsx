@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -45,8 +45,8 @@ function Header() {
     const dispatch = useDispatch();
     const { auth, isAuthenticated } = useSelector(state => state.auth)
     const categories = useSelector(state => state.categories)
+    const cart = useSelector(state => state.cart)
     const favorites = useSelector(state => state.favorites);
-    const [showMenu, setShowMenu] = useState(false)
     const [logoutApi, { isLoading }] = useLogoutApiMutation()
 
     const renderedCategories = organizeCategories(categories)
@@ -91,13 +91,13 @@ function Header() {
                                     <li>
                                         <Link to={"/yeu-thich"} className="wishlist-icon">
                                             <i className="fa-solid fa-heart"></i>
-                                            <span>1</span>
+                                            <span>{favorites.length}</span>
                                         </Link>
                                     </li>
                                     <li>
                                         <Link to={"/gio-hang"} className="shopping-cart-icon">
                                             <i className="fa-solid fa-bag-shopping"></i>
-                                            <span>3</span>
+                                            <span>{cart.length}</span>
                                         </Link>
                                     </li>
 
@@ -114,45 +114,37 @@ function Header() {
                                                     className="user-avatar"
                                                     src={auth.avatar}
                                                     alt={auth.name}
-                                                    onClick={() => setShowMenu(!showMenu)}
                                                 />
 
-                                                {showMenu && (
-                                                    <ul className="menu">
-                                                        {auth.roles.includes("ADMIN") && (
-                                                            <li className="menu-item">
-                                                                <NavLink to={"/admin/dashboard"}>
-                                                                    <span><i className="fa fa-user-secret" aria-hidden="true"></i></span> Trang quản trị
-                                                                </NavLink>
-                                                            </li>
-                                                        )}
+                                                <ul className="menu">
+                                                    {auth.roles.includes("ADMIN") && (
                                                         <li className="menu-item">
-                                                            <NavLink to={"/khach-hang/tai-khoan"}>
-                                                                <span><i className="fa-solid fa-user"></i></span> Tài khoản
+                                                            <NavLink to={"/admin/dashboard"}>
+                                                                <span><i className="fa fa-user-secret" aria-hidden="true"></i></span> Trang quản trị
                                                             </NavLink>
                                                         </li>
-                                                        <li className="menu-item">
-                                                            <NavLink to={"/khach-hang/quan-ly-don-hang"}>
-                                                                <span><i className="fa-regular fa-file"></i></span> Quản lý đơn hàng
-                                                            </NavLink>
-                                                        </li>
-                                                        <li className="menu-item">
-                                                            <NavLink to={"/khach-hang/dia-chi"}>
-                                                                <span><i className="fa-solid fa-location-dot"></i></span> Sổ địa chỉ
-                                                            </NavLink>
-                                                        </li>
-                                                        <li className="menu-item">
-                                                            <NavLink to={"/khach-hang/lich-su-giao-dich"}>
-                                                                <span><i className="fa-solid fa-clock-rotate-left"></i></span> Lịch sử giao dịch
-                                                            </NavLink>
-                                                        </li>
-                                                        <li className="menu-item">
-                                                            <p className="logout-btn" onClick={handleLogout}>
-                                                                <span><i className="fa-solid fa-right-from-bracket"></i></span> Đăng xuất
-                                                            </p>
-                                                        </li>
-                                                    </ul>
-                                                )}
+                                                    )}
+                                                    <li className="menu-item">
+                                                        <NavLink to={"/khach-hang/tai-khoan"}>
+                                                            <span><i className="fa-solid fa-user"></i></span> Tài khoản
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="menu-item">
+                                                        <NavLink to={"/khach-hang/dia-chi"}>
+                                                            <span><i className="fa-solid fa-location-dot"></i></span> Sổ địa chỉ
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="menu-item">
+                                                        <NavLink to={"/khach-hang/lich-su-giao-dich"}>
+                                                            <span><i className="fa-solid fa-clock-rotate-left"></i></span> Lịch sử giao dịch
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="menu-item">
+                                                        <p className="logout-btn" onClick={handleLogout}>
+                                                            <span><i className="fa-solid fa-right-from-bracket"></i></span> Đăng xuất
+                                                        </p>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </li>
                                     )}

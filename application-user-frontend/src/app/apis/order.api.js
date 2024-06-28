@@ -6,23 +6,28 @@ export const orderApi = createApi({
     baseQuery: baseQueryAuth,
     endpoints: (builder) => ({
         getOrdersByCurrentUser: builder.query({
-            query: () => `/orders/history`
+            query: () => `/orders`,
+            providesTags: ['Order']
         }),
-        createOrder: builder.mutation({
+        createOrderByCustomer: builder.mutation({
             query: (data) => ({
                 url: `/orders`,
                 method: 'POST',
                 body: data
             }),
         }),
-        getOrderById: builder.query({
-            query: (orderId) => `/orders/${orderId}`
+        cancelOrderByCustomer: builder.mutation({
+            query: (orderId) => ({
+                url: `/orders/${orderId}/cancel`,
+                method: 'PUT',
+            }),
+            invalidatesTags: ['Order']
         }),
     }),
 });
 
 export const {
     useGetOrdersByCurrentUserQuery,
-    useCreateOrderMutation,
-    useGetOrderByIdQuery
+    useCreateOrderByCustomerMutation,
+    useCancelOrderByCustomerMutation
 } = orderApi;

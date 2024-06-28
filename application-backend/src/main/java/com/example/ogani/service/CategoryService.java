@@ -3,6 +3,8 @@ package com.example.ogani.service;
 import com.example.ogani.entity.Category;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.CategoryDto;
+import com.example.ogani.model.mapper.CategoryMapper;
 import com.example.ogani.model.request.UpsertParentCategory;
 import com.example.ogani.model.request.UpsertSubCategory;
 import com.example.ogani.repository.CategoryRepository;
@@ -20,10 +22,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final Slugify slugify;
     private final ProductRepository productRepository;
+    private final Slugify slugify;
+    private final CategoryMapper categoryMapper;
 
-    public List<Category> getAllCategories() {
+    public List<CategoryDto> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Order.desc("parent.id"),
+                Sort.Order.desc("id")));
+        return categories.stream()
+                .map(categoryMapper::toCategoryDto)
+                .toList();
+    }
+
+    public List<Category> getAllCategoriesByAdmin() {
         return categoryRepository.findAll(Sort.by(Sort.Order.desc("parent.id"), Sort.Order.desc("id")));
     }
 

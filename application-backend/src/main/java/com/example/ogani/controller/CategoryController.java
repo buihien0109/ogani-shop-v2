@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping(value = {"/public/categories", "/admin/categories"})
+    @GetMapping("/public/categories")
     public ResponseEntity<?> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
+    }
+
+    @GetMapping("/admin/categories")
+    public ResponseEntity<?> getAllCategoriesByAdmin() {
+        return ResponseEntity.ok(categoryService.getAllCategoriesByAdmin());
     }
 
     @PostMapping("/admin/categories/create-parent-category")

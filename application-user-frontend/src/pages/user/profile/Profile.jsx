@@ -9,7 +9,6 @@ import { useGetUserProfileQuery, useUpdateAvatarMutation, useUpdateProfileMutati
 import { updateAuth } from '../../../app/slices/auth.slice';
 import ErrorPage from '../../../components/error/ErrorPage';
 import Loading from '../../../components/loading/Loading';
-import UpdatePassword from './components/UpdatePassword';
 
 const schema = yup.object().shape({
     name: yup.string().required('Tên không được để trống'),
@@ -30,7 +29,6 @@ function Profile() {
     const { data: user, isLoading, isError } = useGetUserProfileQuery();
     const [updateProfile] = useUpdateProfileMutation();
     const [updateAvatar] = useUpdateAvatarMutation();
-    const [show, setShow] = useState(false);
     const [avatar, setAvatar] = useState("");
 
 
@@ -63,9 +61,6 @@ function Profile() {
             })
     };
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
     const handleUploadAvatar = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -92,7 +87,7 @@ function Profile() {
             </Helmet>
 
 
-            <div className="customer-info pb-5">
+            <div className="customer-info">
                 <h4 className="mb-4">Thông tin tài khoản</h4>
                 <div className="row mb-4">
                     <div className="col-lg-2">
@@ -182,8 +177,6 @@ function Profile() {
                     </div>
                 </form>
             </div>
-
-            <UpdatePassword />
         </>
     )
 }

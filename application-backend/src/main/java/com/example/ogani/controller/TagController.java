@@ -16,14 +16,19 @@ import org.springframework.web.bind.annotation.*;
 public class TagController {
     private final TagService tagService;
 
+    @GetMapping("/public/tags")
+    public ResponseEntity<?> getAllTags() {
+        return ResponseEntity.ok(tagService.getAllTags());
+    }
+
     @GetMapping("/public/tags/{slug}")
     public ResponseEntity<?> getTagBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(tagService.getTagBySlug(slug));
     }
 
-    @GetMapping(value = {"/public/tags", "/admin/tags"})
+    @GetMapping("/admin/tags")
     public ResponseEntity<?> getAllTagsByAdmin() {
-        return ResponseEntity.ok(tagService.getAllTags());
+        return ResponseEntity.ok(tagService.getAllTagsByAdmin());
     }
 
     @GetMapping("/admin/tags/{id}")

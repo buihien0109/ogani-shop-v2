@@ -13,4 +13,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     boolean existsByCode(String code);
 
     List<Coupon> findByStartDateBeforeAndEndDateAfterAndStatus(LocalDateTime start, LocalDateTime end, boolean status);
+
+    Optional<Coupon> findByCode(String couponCode);
 }

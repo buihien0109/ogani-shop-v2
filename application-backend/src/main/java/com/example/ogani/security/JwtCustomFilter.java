@@ -24,8 +24,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("request URI : {}", request.getRequestURI());
-        // If request has URI /api/public, then skip this filter
+        log.info("REQUEST URI : {}", request.getRequestURI());
         if (request.getRequestURI().startsWith("/api/public")) {
             filterChain.doFilter(request, response);
             return;

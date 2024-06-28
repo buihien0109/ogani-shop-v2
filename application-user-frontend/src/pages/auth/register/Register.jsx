@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import breadcrumb from "../../../../public/breadcrumb.jpg";
 import { useRegisterAccountMutation } from '../../../app/apis/auth.api';
 import { IconLoading } from '../../../components/icon/Icon';
+import { Button } from 'react-bootstrap';
 
 const schema = yup.object().shape({
   name: yup.string().required('Tên không được để trống'),
@@ -133,7 +134,7 @@ const Register = () => {
                           <div className="form-action-button">
                             <Button
                               type="submit"
-                              className="btn-sign-up d-flex align-items-center justify-content-center"
+                              className="primary-btn d-flex align-items-center justify-content-center"
                               disabled={isLoading}
                             >
                               {isLoading ? <IconLoading /> : null}

@@ -6,6 +6,8 @@ import com.example.ogani.entity.Product;
 import com.example.ogani.entity.User;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.CartDto;
+import com.example.ogani.model.mapper.CartMapper;
 import com.example.ogani.model.request.AddToCartRequest;
 import com.example.ogani.repository.CartRepository;
 import com.example.ogani.repository.ProductRepository;
@@ -22,14 +24,22 @@ import java.util.ArrayList;
 public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final CartMapper cartMapper;
 
-    public Cart getCart() {
+    public CartDto getCart() {
         User user = SecurityUtils.getCurrentUserLogin();
-        return cartRepository.findByUser_Id(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy giỏ hàng"));
+        Cart cart =  cartRepository.findByUser_Id(user.getId())
+                .orElseGet(() -> {
+                    Cart newCart = Cart.builder()
+                            .user(user)
+                            .cartItems(new ArrayList<>())
+                            .build();
+                    return cartRepository.save(newCart);
+                });
+        return cartMapper.toCartDto(cart);
     }
 
-    public Cart addToCart(AddToCartRequest request) {
+    public CartDto addToCart(AddToCartRequest request) {
         User user = SecurityUtils.getCurrentUserLogin();
 
         Product product = productRepository.findById(request.getProductId())
@@ -57,6 +67,7 @@ public class CartService {
                     cart.addCartItem(cartItem);
                 });
 
-        return cartRepository.save(cart);
+        cartRepository.save(cart);
+        return cartMapper.toCartDto(cart);
     }
 }

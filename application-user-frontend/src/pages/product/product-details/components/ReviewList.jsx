@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useDeleteReviewMutation } from '../../../../app/apis/review.api'
+import ModalConfirm from '../../../../components/modal/modal-confirm/ModalConfirm'
+import useModalConfirm from '../../../../components/modal/modal-confirm/useModalConfirm'
 import { MAX_RATING } from '../../../../data/constants'
 import { formatDate } from '../../../../utils/functionUtils'
 import ModalUpdateReview from './ModalUpdateReview'
@@ -14,6 +16,7 @@ function ReviewList({ reviews, product, onSetShouldRefetch }) {
     const [showModalUpdateReview, setShowModalUpdateReview] = useState(false);
     const [reviewSelected, setReviewSelected] = useState(null);
     const [currentPageReview, setCurrentPageReview] = useState(1);
+    const { isOpen, openModal, closeModal } = useModalConfirm();
 
     const [deleteReview] = useDeleteReviewMutation();
 
@@ -24,16 +27,12 @@ function ReviewList({ reviews, product, onSetShouldRefetch }) {
     }
 
     const handleDeleteReview = (reviewId) => {
-        const isConfirm = window.confirm("Bạn có chắc chắn muốn xóa bình luận này không?");
-        if (!isConfirm) {
-            return;
-        }
-
         deleteReview(reviewId)
             .unwrap()
             .then((res) => {
                 toast.success("Xóa bình luận thành công");
                 onSetShouldRefetch();
+                closeModal();
             })
             .catch((error) => {
                 console.log(error);
@@ -85,7 +84,10 @@ function ReviewList({ reviews, product, onSetShouldRefetch }) {
                                     <button
                                         className="p-0 border-0 bg-transparent btn-delete-review text-danger"
                                         style={{ textDecoration: "underline" }}
-                                        onClick={() => handleDeleteReview(review.id)}
+                                        onClick={() => {
+                                            openModal();
+                                            setReviewSelected(review);
+                                        }}
                                     >Xóa</button>
                                 </div>
                             )}
@@ -114,6 +116,16 @@ function ReviewList({ reviews, product, onSetShouldRefetch }) {
                     product={product}
                     review={reviewSelected}
                     onSetShouldRefetch={onSetShouldRefetch}
+                />
+            )}
+
+            {isAuthenticated && isOpen && (
+                <ModalConfirm
+                    title="Xác nhận xóa"
+                    message="Bạn có chắc chắn muốn xóa bình luận này không?"
+                    show={isOpen}
+                    handleClose={closeModal}
+                    handleConfirm={() => handleDeleteReview(reviewSelected.id)}
                 />
             )}
         </>

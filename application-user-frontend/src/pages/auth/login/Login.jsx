@@ -109,7 +109,7 @@ function Login() {
                                                     <div className="form-action-button">
                                                         <Button
                                                             type="submit"
-                                                            className="btn-sign-in d-flex align-items-center justify-content-center"
+                                                            className="primary-btn d-flex align-items-center justify-content-center"
                                                             disabled={isLoading}
                                                         >
                                                             {isLoading ? <IconLoading /> : null}

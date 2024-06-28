@@ -103,7 +103,7 @@ function BlogDetails() {
                                         </div>
                                     </div>
                                     <div className="col-lg-6">
-                                        <div className="blog__details__widget">
+                                        <div className="blog__details__widget d-flex justify-content-end align-items-center h-100">
                                             <ul>
                                                 <li>
                                                     <span>Danh mục:</span>&nbsp;

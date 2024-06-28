@@ -19,6 +19,11 @@ public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
 
+    @GetMapping("/public/products/ids")
+    public ResponseEntity<?> getAllProductsInIds(@RequestParam List<Integer> ids) {
+        return ResponseEntity.ok(productService.getAllProductsInIds(ids));
+    }
+
     @GetMapping("/public/products/all")
     public ResponseEntity<?> getAllProducts(@RequestParam(required = false, defaultValue = "8") Integer limit) {
         return ResponseEntity.ok(productService.getAllProductsByCategories(limit));

@@ -77,6 +77,22 @@ export const productApi = createApi({
                 };
             }
         }),
+        getProductsInIds: builder.query({
+            query: (ids) => {
+                return {
+                    url: `/products/ids`,
+                    method: "GET",
+                    params: { ids: ids.join(",") }
+                }
+            },
+            transformResponse: (response) => {
+                return response.map((product) => ({
+                    ...product,
+                    thumbnail: product.thumbnail.startsWith("/api") ? `${DOMAIN}${product.thumbnail}` : product.thumbnail,
+                    subImages: product.subImages.map((image) => image.startsWith("/api") ? `${DOMAIN}${image}` : image),
+                }))
+            }
+        }),
         getProductDetail: builder.query({
             query: ({ productId, productSlug }) => `/products/${productId}/${productSlug}`,
             transformResponse: (response) => ({
@@ -121,6 +137,7 @@ export const {
     useGetProductsQuery,
     useGetDiscountedProductsQuery,
     useGetProductsByCategoryQuery,
+    useGetProductsInIdsQuery,
     useGetProductDetailQuery,
     useGetReviewsByProductQuery,
     useGetRelatedProductsQuery

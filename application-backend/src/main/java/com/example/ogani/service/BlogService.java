@@ -4,6 +4,7 @@ import com.example.ogani.entity.Blog;
 import com.example.ogani.entity.Tag;
 import com.example.ogani.entity.User;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.BlogDetailsDto;
 import com.example.ogani.model.dto.BlogDto;
 import com.example.ogani.model.mapper.BlogMapper;
 import com.example.ogani.model.request.UpsertBlogRequest;
@@ -42,9 +43,10 @@ public class BlogService {
         return blogPage.map(blogMapper::toBlogDto);
     }
 
-    public Blog getBlogDetails(Integer id, String slug) {
-        return blogRepository.findByIdAndSlugAndStatus(id, slug, true)
+    public BlogDetailsDto getBlogDetails(Integer id, String slug) {
+        Blog blog = blogRepository.findByIdAndSlugAndStatus(id, slug, true)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy blog có id = " + id));
+        return blogMapper.toBlogDetailsDto(blog);
     }
 
     public List<BlogDto> getLatestBlogs(Integer limit) {

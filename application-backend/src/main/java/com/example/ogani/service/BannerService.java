@@ -3,6 +3,8 @@ package com.example.ogani.service;
 import com.example.ogani.entity.Banner;
 import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
+import com.example.ogani.model.dto.BannerDto;
+import com.example.ogani.model.mapper.BannerMapper;
 import com.example.ogani.model.request.SortBannerRequest;
 import com.example.ogani.model.request.UpsertBannerRequest;
 import com.example.ogani.repository.BannerRepository;
@@ -22,12 +24,20 @@ import java.util.List;
 public class BannerService {
     private final BannerRepository bannerRepository;
     private final Slugify slugify;
+    private final BannerMapper bannerMapper;
 
     public List<Banner> getAllBanners() {
         return bannerRepository.findAll(Sort.by("createdAt").descending());
     }
 
-    public List<Banner> getAllBannersActive() {
+    public List<BannerDto> getAllBannersActive() {
+        List<Banner> banners = bannerRepository.findByStatus(true, Sort.by("displayOrder").ascending());
+        return banners.stream()
+                .map(bannerMapper::toBannerDto)
+                .toList();
+    }
+
+    public List<Banner> getAllBannersActiveByAdmin() {
         return bannerRepository.findByStatus(true, Sort.by("displayOrder").ascending());
     }
 

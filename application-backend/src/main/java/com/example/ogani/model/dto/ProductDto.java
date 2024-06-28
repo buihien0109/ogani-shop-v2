@@ -6,9 +6,10 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDto {
     Integer id;
@@ -21,5 +22,4 @@ public class ProductDto {
     List<String> subImages;
     Integer stockQuantity;
     String description;
-
 }

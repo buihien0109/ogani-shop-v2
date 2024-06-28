@@ -2,6 +2,7 @@ package com.example.ogani;
 
 import com.example.ogani.constant.ConstantValue;
 import com.example.ogani.entity.*;
+import com.example.ogani.model.enums.ReviewStatus;
 import com.example.ogani.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +160,27 @@ class OganiShopApplicationTests {
             review.setCreatedAt(randomDate);
             review.setUpdatedAt(randomDate);
             reviewRepository.save(review);
+        }
+    }
+
+    @Test
+    void update_rating_avg_products() {
+        List<Product> products = productRepository.findAll();
+
+        for (Product product : products) {
+            List<Review> reviews = reviewRepository.findByProduct_IdAndStatus(product.getId(), ReviewStatus.ACCEPTED);
+            double ratingAvg = 0;
+            for (Review review : reviews) {
+                ratingAvg += review.getRating();
+            }
+            if(!reviews.isEmpty()) {
+                ratingAvg /= reviews.size();
+
+                // Làm tròn 1 chữ số thập phân
+                ratingAvg = Math.round(ratingAvg * 10) / 10.0;
+            }
+            product.setRating(ratingAvg);
+            productRepository.save(product);
         }
     }
 

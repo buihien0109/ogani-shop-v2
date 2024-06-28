@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { useAddToCartMutation } from '../../app/apis/cart.api';
-import { addToCart as addToCartLocal } from '../../app/slices/cart.slice';
+import useCart from '../../hooks/useCart';
 import ProductSlider from '../../pages/product/product-details/components/ProductSlider';
 import { formatCurrency } from '../../utils/functionUtils';
 
@@ -23,54 +20,12 @@ const parseProductStatus = (status) => {
 };
 
 const ModalProductOverview = ({ show, handleClose, product }) => {
-    const dispatch = useDispatch();
-    const { isAuthenticated } = useSelector(state => state.auth);
-    const cart = useSelector(state => state.cart);
-    const [count, setCount] = useState(1);
-
-    const [addToCart, { isLoading }] = useAddToCartMutation();
-
-    const handleIncreaseQuantity = () => {
-        const newCount = count + 1;
-        if (newCount <= product.stockQuantity) {
-            setCount(count => count + 1);
-        } else {
-            toast.warn("Số lượng sản phẩm trong kho không đủ");
-        }
-    };
-
-    const handleDecreaseQuantity = () => {
-        if (count > 1) {
-            setCount(count => count - 1);
-        }
-    }
-
-    const handleAddToCart = (productId, quantity) => {
-        if (isAuthenticated) {
-            addToCart({ productId, quantity })
-                .unwrap()
-                .then((response) => {
-                    handleClose();
-                    toast.success("Thêm vào giỏ hàng thành công");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    toast.error(error.data.message)
-                })
-        } else {
-            const productInCart = cart.find(item => item.productId == productId);
-            if (productInCart) {
-                const newQuantity = productInCart.quantity + quantity;
-                if (newQuantity <= product.stockQuantity) {
-                    dispatch(addToCartLocal({ productId, quantity }));
-                    handleClose();
-                    toast.success("Thêm vào giỏ hàng thành công");
-                } else {
-                    toast.warn("Số lượng sản phẩm trong kho không đủ");
-                }
-            }
-        }
-    }
+    const {
+        quantity,
+        handleIncreaseQuantity,
+        handleDecreaseQuantity,
+        handleAddToCart,
+    } = useCart(product);
 
     return (
         <Modal
@@ -115,19 +70,19 @@ const ModalProductOverview = ({ show, handleClose, product }) => {
                                             <div className="pro-qty">
                                                 <span
                                                     className="dec qtybtn"
-                                                    onClick={() => handleDecreaseQuantity()}
+                                                    onClick={handleDecreaseQuantity}
                                                 >-</span>
-                                                <input type="text" value={count} disabled />
+                                                <input type="text" value={quantity} disabled />
                                                 <span
                                                     className="inc qtybtn"
-                                                    onClick={() => handleIncreaseQuantity()}
+                                                    onClick={handleIncreaseQuantity}
                                                 >+</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button
                                         className="border-0 primary-btn btn-add-to-card"
-                                        onClick={() => handleAddToCart(product.id, count)}
+                                        onClick={handleAddToCart}
                                     >THÊM VÀO GIỎ HÀNG</button>
                                 </>
                             )}

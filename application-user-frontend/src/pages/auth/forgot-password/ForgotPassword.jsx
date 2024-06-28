@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import breadcrumb from "../../../../public/breadcrumb.jpg";
 import { useForgotPasswordMutation } from '../../../app/apis/auth.api';
+import { IconLoading } from '../../../components/icon/Icon';
+import { Button } from 'react-bootstrap';
 
 const schema = yup.object().shape({
   email: yup.string().email('Email không đúng định dạng').required('Email không được để trống'),
@@ -76,7 +78,14 @@ const ForgotPassword = () => {
 
                         <div className="reset-toggle-btn">
                           <div className="form-action-button">
-                            <button type="submit" className="btn-sign-in">Xác nhận</button>
+                            <Button
+                              type="submit"
+                              className="primary-btn d-flex align-items-center justify-content-center"
+                              disabled={isLoading}
+                            >
+                              {isLoading ? <IconLoading /> : null}
+                              Gửi yêu cầu
+                            </Button>
                             <Link to={"/dang-nhap"} id="customer_register_link">Quay lại đăng nhập</Link>
                           </div>
                         </div>

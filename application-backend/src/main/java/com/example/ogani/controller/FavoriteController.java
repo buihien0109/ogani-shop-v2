@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -28,15 +29,13 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<?> getFavoritesByCurrentUser(@RequestParam(required = false, defaultValue = "1") Integer page,
-                                                       @RequestParam(required = false, defaultValue = "12") Integer limit) {
-        return ResponseEntity.ok(favoriteService.getFavoritesByCurrentUser(page, limit));
+    public ResponseEntity<?> getFavorites() {
+        return ResponseEntity.ok(favoriteService.getFavorites());
     }
 
     @PostMapping("/favorites")
     public ResponseEntity<?> addToFavorite(@Valid @RequestBody AddFavoriteRequest request) {
-        Favorite favorite = favoriteService.addToFavorite(request);
-        return ResponseEntity.ok(favorite);
+        return ResponseEntity.ok(favoriteService.addToFavorite(request));
     }
 
     @DeleteMapping("/favorites")

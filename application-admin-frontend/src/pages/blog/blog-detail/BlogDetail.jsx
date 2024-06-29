@@ -108,18 +108,23 @@ const BlogDetail = () => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
+            okButtonProps: { loading: isLoadingDeleteBlog },
             onOk: () => {
-                deleteBlog(blog.id)
-                    .unwrap()
-                    .then((data) => {
-                        message.success("Xóa bài viết thành công!");
-                        setTimeout(() => {
-                            navigate("/admin/blogs");
-                        }, 1500);
-                    })
-                    .catch((error) => {
-                        message.error(error.data.message);
-                    });
+                return new Promise((resolve, reject) => {
+                    deleteBlog(blog.id)
+                        .unwrap()
+                        .then((data) => {
+                            message.success("Xóa bài viết thành công!");
+                            setTimeout(() => {
+                                navigate("/admin/blogs");
+                            }, 1500);
+                            resolve();
+                        })
+                        .catch((error) => {
+                            message.error(error.data.message);
+                            reject();
+                        });
+                });
             },
             footer: (_, { OkBtn, CancelBtn }) => (
                 <>

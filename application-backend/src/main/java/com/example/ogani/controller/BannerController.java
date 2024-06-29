@@ -3,6 +3,7 @@ package com.example.ogani.controller;
 import com.example.ogani.model.request.SortBannerRequest;
 import com.example.ogani.model.request.UpsertBannerRequest;
 import com.example.ogani.service.BannerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -36,12 +37,12 @@ public class BannerController {
     }
 
     @PostMapping("/admin/banners")
-    public ResponseEntity<?> createBanner(@RequestBody UpsertBannerRequest request) {
+    public ResponseEntity<?> createBanner(@Valid @RequestBody UpsertBannerRequest request) {
         return ResponseEntity.ok(bannerService.createBanner(request));
     }
 
     @PutMapping("/admin/banners/{id}")
-    public ResponseEntity<?> updateBanner(@PathVariable Integer id, @RequestBody UpsertBannerRequest request) {
+    public ResponseEntity<?> updateBanner(@PathVariable Integer id, @Valid @RequestBody UpsertBannerRequest request) {
         return ResponseEntity.ok(bannerService.updateBanner(id, request));
     }
 
@@ -52,7 +53,7 @@ public class BannerController {
     }
 
     @PostMapping("/admin/banners/sort")
-    public ResponseEntity<?> sortBanners(@RequestBody SortBannerRequest request) {
+    public ResponseEntity<?> sortBanners(@Valid @RequestBody SortBannerRequest request) {
         log.info("Request: {}", request);
         bannerService.sortBanners(request);
         return ResponseEntity.ok().build();

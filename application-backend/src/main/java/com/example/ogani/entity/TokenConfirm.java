@@ -1,9 +1,9 @@
 package com.example.ogani.entity;
 
+import com.example.ogani.model.enums.TokenType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.example.ogani.model.enums.TokenType;
 
 import java.time.LocalDateTime;
 

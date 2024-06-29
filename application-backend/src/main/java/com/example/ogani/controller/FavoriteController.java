@@ -1,6 +1,5 @@
 package com.example.ogani.controller;
 
-import com.example.ogani.entity.Favorite;
 import com.example.ogani.model.request.AddFavoriteRequest;
 import com.example.ogani.service.FavoriteService;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j

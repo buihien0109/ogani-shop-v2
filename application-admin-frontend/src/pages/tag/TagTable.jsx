@@ -73,6 +73,7 @@ const TagTable = ({ data }) => {
                                 onClick={() => {
                                     handleConfirm(record.id);
                                 }}
+                                loading={isLoadingDeleteTag}
                             ></Button>
                         </Space>
                     </Flex>
@@ -88,18 +89,18 @@ const TagTable = ({ data }) => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
-            okButtonProps: { loading: isLoadingDeleteTag }, // Hiển thị loading trên nút OK
+            okButtonProps: { loading: isLoadingDeleteTag },
             onOk: () => {
                 return new Promise((resolve, reject) => {
                     deleteTag(id)
                         .unwrap()
                         .then(() => {
                             message.success("Xóa thể loại thành công!");
-                            resolve(); // Đóng modal sau khi xóa thành công
+                            resolve();
                         })
                         .catch((error) => {
                             message.error(error.data.message);
-                            reject(); // Không đóng modal nếu xóa thất bại
+                            reject();
                         });
                 });
             },

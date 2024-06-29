@@ -17,12 +17,13 @@ public class CartItemController {
 
     @PutMapping("/cart-items")
     public ResponseEntity<?> changeQuantityCartItemByProductId(@RequestParam Integer productId,
-                                                             @Valid @RequestBody UpdateCartItemRequest request) {
+                                                               @Valid @RequestBody UpdateCartItemRequest request) {
         return ResponseEntity.ok(cartItemService.changeQuantityCartItemByProductId(productId, request.getQuantity()));
     }
 
     @PutMapping("/cart-items/{id}")
-    public ResponseEntity<?> changeQuantityCartItemById(@PathVariable Integer id, @Valid @RequestBody UpdateCartItemRequest request) {
+    public ResponseEntity<?> changeQuantityCartItemById(@PathVariable Integer id,
+                                                        @Valid @RequestBody UpdateCartItemRequest request) {
         return ResponseEntity.ok(cartItemService.changeQuantityCartItemById(id, request.getQuantity()));
     }
 

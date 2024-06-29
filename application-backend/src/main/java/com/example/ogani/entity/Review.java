@@ -1,10 +1,10 @@
 package com.example.ogani.entity;
 
+import com.example.ogani.model.enums.ReviewStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.example.ogani.model.enums.ReviewStatus;
 
 import java.time.LocalDateTime;
 

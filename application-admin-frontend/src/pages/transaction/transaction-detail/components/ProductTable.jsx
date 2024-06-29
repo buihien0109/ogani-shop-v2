@@ -74,6 +74,7 @@ const ProductTable = ({ transactionId, data }) => {
                                 onClick={() => {
                                     handleConfirm(record.id);
                                 }}
+                                loading={isLoading}
                             ></Button>
                         </Space>
                     </Flex>
@@ -89,18 +90,18 @@ const ProductTable = ({ transactionId, data }) => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
-            okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
+            okButtonProps: { loading: isLoading },
             onOk: () => {
                 return new Promise((resolve, reject) => {
                     deleteTransactionItem({ id: transactionId, itemId: id })
                         .unwrap()
                         .then(() => {
                             message.success("Xóa sản phẩm thành công!");
-                            resolve(); // Đóng modal sau khi xóa thành công
+                            resolve();
                         })
                         .catch((error) => {
                             message.error(error.data.message);
-                            reject(); // Không đóng modal nếu xóa thất bại
+                            reject();
                         });
                 });
             },

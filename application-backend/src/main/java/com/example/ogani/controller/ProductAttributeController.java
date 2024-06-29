@@ -24,7 +24,7 @@ public class ProductAttributeController {
     }
 
     @PutMapping("/admin/attributes/{id}")
-    public ResponseEntity<?> updateAttribute(@RequestBody UpsertProductAttributeRequest request,
+    public ResponseEntity<?> updateAttribute(@Valid @RequestBody UpsertProductAttributeRequest request,
                                              @PathVariable Integer id) {
         return ResponseEntity.ok(productAttributeService.updateAttribute(id, request));
     }

@@ -89,6 +89,39 @@ public class AuthService {
                 .build();
     }
 
+    public AuthResponse loginByAdmin(LoginRequest request) throws AuthenticationException {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        Authentication authentication = authenticationManager.authenticate(token);
+        if (authentication.getAuthorities().stream().noneMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
+            throw new BadRequestException("Tài khoản không có quyền truy cập");
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        String tokenJwt = jwtUtils.generateToken(userDetails);
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user có email = " + request.getEmail()));
+        String refreshToken = UUID.randomUUID().toString();
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
+                .token(refreshToken)
+                .expiredAt(LocalDateTime.now().plus(refreshTokenExpiration, ChronoUnit.MILLIS))
+                .user(user)
+                .build();
+        refreshTokenRepository.save(refreshTokenEntity);
+
+        return AuthResponse.builder()
+                .user(userMapper.toUserDto(user))
+                .accessToken(tokenJwt)
+                .refreshToken(refreshToken)
+                .isAuthenticated(true)
+                .build();
+    }
+
     @Transactional
     public void logout() {
         User user = SecurityUtils.getCurrentUserLogin();

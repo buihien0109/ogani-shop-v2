@@ -1,6 +1,7 @@
 package com.example.ogani.service;
 
 import com.example.ogani.entity.*;
+import com.example.ogani.exception.BadRequestException;
 import com.example.ogani.exception.ResourceNotFoundException;
 import com.example.ogani.model.enums.OrderStatus;
 import com.example.ogani.model.enums.OrderUserType;
@@ -13,7 +14,6 @@ import com.example.ogani.model.response.AddressResponse;
 import com.example.ogani.model.response.PaymentResponse;
 import com.example.ogani.repository.*;
 import com.example.ogani.security.SecurityUtils;
-import com.github.dockerjava.api.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

@@ -36,6 +36,18 @@ public class AuthControlller {
         }
     }
 
+    @PostMapping("/public/auth/admin/login")
+    public ResponseEntity<?> loginByAdmin(@Valid @RequestBody LoginRequest request) {
+        try {
+            AuthResponse authResponse = authService.loginByAdmin(request);
+            return ResponseEntity.ok(authResponse);
+        } catch (DisabledException e) {
+            throw new BadRequestException("Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email của bạn để kích hoạt tài khoản");
+        } catch (AuthenticationException e) {
+            throw new BadRequestException("Tài khoản hoặc mật khẩu không đúng");
+        }
+    }
+
     @PostMapping("/auth/logout")
     public ResponseEntity<?> logout() {
         authService.logout();
@@ -43,7 +55,7 @@ public class AuthControlller {
     }
 
     @PostMapping("/public/auth/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         AuthResponse authResponse = authService.refreshToken(request);
         return ResponseEntity.ok(authResponse);
     }

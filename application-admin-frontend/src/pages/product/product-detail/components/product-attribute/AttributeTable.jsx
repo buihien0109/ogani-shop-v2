@@ -48,6 +48,7 @@ const AttributeTable = ({ data, productId }) => {
                             onClick={() => {
                                 handleConfirm(record.id);
                             }}
+                            loading={isLoading}
                         ></Button>
                     </Space>
                 );
@@ -62,18 +63,18 @@ const AttributeTable = ({ data, productId }) => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
-            okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
+            okButtonProps: { loading: isLoading },
             onOk: () => {
                 return new Promise((resolve, reject) => {
                     deleteAttribute(id)
                         .unwrap()
                         .then(() => {
                             message.success("Xóa thuộc tính thành công!");
-                            resolve(); // Đóng modal sau khi xóa thành công
+                            resolve();
                         })
                         .catch((error) => {
                             message.error(error.data.message);
-                            reject(); // Không đóng modal nếu xóa thất bại
+                            reject();
                         });
                 });
             },

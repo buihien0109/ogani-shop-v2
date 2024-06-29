@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Slf4j
 public class SecurityUtils {
-    // Lấy thông tin user hiện tại
     public static User getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Optional<User> userOptional = Optional.ofNullable(securityContext.getAuthentication()).map(authentication -> {
@@ -25,7 +24,6 @@ public class SecurityUtils {
         return userOptional.orElse(null);
     }
 
-    // Kiểm tra xem user đã đăng nhập chưa
     public static boolean isAuthenticated() {
         User user = getCurrentUserLogin();
         return user != null;

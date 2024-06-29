@@ -103,6 +103,7 @@ const CouponTable = ({ data }) => {
                             onClick={() => {
                                 handleConfirm(record.id);
                             }}
+                            loading={isLoading}
                         ></Button>
                     </Space>
                 );

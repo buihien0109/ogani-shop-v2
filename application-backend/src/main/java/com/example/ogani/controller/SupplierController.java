@@ -33,7 +33,7 @@ public class SupplierController {
     }
 
     @PutMapping("/admin/suppliers/{id}")
-    public ResponseEntity<?> updateSupplier(@PathVariable Integer id, @RequestBody UpsertSupplierRequest request) {
+    public ResponseEntity<?> updateSupplier(@PathVariable Integer id, @Valid @RequestBody UpsertSupplierRequest request) {
         return ResponseEntity.ok().body(supplierService.updateSupplier(id, request));
     }
 

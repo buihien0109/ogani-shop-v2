@@ -14,21 +14,17 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.OutputStream;
 
-// Xử lý trong trường hợp đã đăng nhập, nhưng không có quyền
 @Component
 public class CustomAccessDenied implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        // Tao doi tuong
         ErrorResponse error = new ErrorResponse(HttpStatus.FORBIDDEN, "Bạn không có quyền");
 
-        // Set thuoc tinh cho response
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-        // Convert object -> json
         OutputStream responseStream = response.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(responseStream, error);

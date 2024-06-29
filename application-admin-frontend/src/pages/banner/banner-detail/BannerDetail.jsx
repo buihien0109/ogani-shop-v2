@@ -106,18 +106,24 @@ const BannerDetail = () => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
+            okButtonProps: { loading: isLoadingDeleteBanner },
             onOk: () => {
-                deleteBanner(banner.id)
-                    .unwrap()
-                    .then((data) => {
-                        message.success("Xóa banner thành công!");
-                        setTimeout(() => {
-                            navigate("/admin/banners");
-                        }, 1500);
-                    })
-                    .catch((error) => {
-                        message.error(error.data.message);
-                    });
+                return new Promise((resolve, reject) => {
+                    deleteBanner(banner.id)
+                        .unwrap()
+                        .then((data) => {
+                            message.success("Xóa banner thành công!");
+                            setTimeout(() => {
+                                navigate("/admin/banners");
+                            }, 1500);
+                            resolve();
+                        })
+                        .catch((error) => {
+                            message.error(error.data.message);
+                            reject();
+                        });
+                });
+
             },
             footer: (_, { OkBtn, CancelBtn }) => (
                 <>

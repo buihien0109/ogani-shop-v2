@@ -77,6 +77,7 @@ const CategoryTable = ({ data }) => {
                                 danger
                                 icon={<DeleteOutlined />}
                                 onClick={() => handleConfirm(category.id)}
+                                loading={isLoadingDeleteCategory}
                             ></Button>
                         </Space>
                     </Flex>
@@ -123,18 +124,18 @@ const CategoryTable = ({ data }) => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
-            okButtonProps: { loading: isLoadingDeleteCategory }, // Hiển thị loading trên nút OK
+            okButtonProps: { loading: isLoadingDeleteCategory },
             onOk: () => {
                 return new Promise((resolve, reject) => {
                     deleteCategory(id)
                         .unwrap()
                         .then(() => {
                             message.success("Xóa danh mục thành công!");
-                            resolve(); // Đóng modal sau khi xóa thành công
+                            resolve();
                         })
                         .catch((error) => {
                             message.error(error.data.message);
-                            reject(); // Không đóng modal nếu xóa thất bại
+                            reject();
                         });
                 });
             },

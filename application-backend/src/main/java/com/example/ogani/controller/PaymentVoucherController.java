@@ -2,6 +2,7 @@ package com.example.ogani.controller;
 
 import com.example.ogani.model.request.UpsertPaymentVoucherRequest;
 import com.example.ogani.service.PaymentVoucherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,14 @@ public class PaymentVoucherController {
         return ResponseEntity.ok(paymentVoucherService.getPaymentVoucherById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<?> createPaymentVoucher(@RequestBody UpsertPaymentVoucherRequest request) {
+    @PostMapping("/admin/payment-vouchers")
+    public ResponseEntity<?> createPaymentVoucher(@Valid @RequestBody UpsertPaymentVoucherRequest request) {
         return ResponseEntity.ok(paymentVoucherService.createPaymentVoucher(request));
     }
 
     @PutMapping("/admin/payment-vouchers/{id}")
-    public ResponseEntity<?> updatePaymentVoucher(@PathVariable Integer id, @RequestBody UpsertPaymentVoucherRequest request) {
+    public ResponseEntity<?> updatePaymentVoucher(@PathVariable Integer id,
+                                                  @Valid @RequestBody UpsertPaymentVoucherRequest request) {
         return ResponseEntity.ok(paymentVoucherService.updatePaymentVoucher(id, request));
     }
 

@@ -2,6 +2,7 @@ package com.example.ogani.controller;
 
 import com.example.ogani.model.request.UpsertBlogRequest;
 import com.example.ogani.service.BlogService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,7 @@ public class BlogControlller {
     }
 
     @PostMapping("/admin/blogs")
-    public ResponseEntity<?> createBlog(@RequestBody UpsertBlogRequest request) {
+    public ResponseEntity<?> createBlog(@Valid @RequestBody UpsertBlogRequest request) {
         return new ResponseEntity<>(blogService.createBlog(request), HttpStatus.CREATED);
     }
 
@@ -61,7 +62,7 @@ public class BlogControlller {
     }
 
     @PutMapping("/admin/blogs/{id}")
-    public ResponseEntity<?> updateBlog(@PathVariable Integer id, @RequestBody UpsertBlogRequest request) {
+    public ResponseEntity<?> updateBlog(@PathVariable Integer id, @Valid @RequestBody UpsertBlogRequest request) {
         return ResponseEntity.ok(blogService.updateBlog(id, request));
     }
 

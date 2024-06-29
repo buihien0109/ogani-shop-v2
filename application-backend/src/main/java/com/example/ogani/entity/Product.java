@@ -1,11 +1,11 @@
 package com.example.ogani.entity;
 
+import com.example.ogani.model.enums.ProductStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.example.ogani.model.enums.ProductStatus;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;

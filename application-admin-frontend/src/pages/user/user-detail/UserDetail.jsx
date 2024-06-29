@@ -124,17 +124,38 @@ const UserDetail = () => {
     };
 
     const handleResetPassword = () => {
-        resetPassword(user.id)
-            .unwrap()
-            .then((data) => {
-                message.success(
-                    "Reset mật khẩu thành công. Mật khẩu mới là: 123",
-                    2
-                );
-            })
-            .catch((error) => {
-                message.error(error.data.message);
-            });
+        Modal.confirm({
+            title: "Bạn có chắc chắn muốn reset mật khẩu?",
+            content: "Hành động này không thể hoàn tác!",
+            okText: "Xác nhận",
+            okType: "danger",
+            cancelText: "Hủy",
+            okButtonProps: { loading: isLoadingResetPassword },
+            onOk: () => {
+                return new Promise((resolve, reject) => {
+                    resetPassword(user.id)
+                        .unwrap()
+                        .then((data) => {
+                            message.success(
+                                "Reset mật khẩu thành công. Mật khẩu mới là: 123",
+                                2
+                            );
+                            resolve();
+                        })
+                        .catch((error) => {
+                            message.error(error.data.message);
+                            reject();
+                        });
+                });
+
+            },
+            footer: (_, { OkBtn, CancelBtn }) => (
+                <>
+                    <CancelBtn />
+                    <OkBtn />
+                </>
+            ),
+        });
     };
 
     const selecteImage = (image) => () => {

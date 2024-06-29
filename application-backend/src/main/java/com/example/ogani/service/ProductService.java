@@ -152,7 +152,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm có id = " + id));
 
         String thumbnail = request.getThumbnail();
-        if (request.getThumbnail() == null || org.apache.commons.lang3.StringUtils.isBlank(request.getThumbnail())) {
+        if (request.getThumbnail() == null || StringUtils.isBlank(request.getThumbnail())) {
             thumbnail = StringUtils.generateLinkImage(product.getName());
         }
         product.setThumbnail(thumbnail);

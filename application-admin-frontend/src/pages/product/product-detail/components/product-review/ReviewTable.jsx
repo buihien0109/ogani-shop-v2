@@ -128,6 +128,7 @@ const ReviewTable = ({ productId }) => {
                             onClick={() => {
                                 handleConfirm(record.id);
                             }}
+                            loading={isLoadingDeleteReview}
                         ></Button>
                     </Space>
                 );
@@ -142,7 +143,7 @@ const ReviewTable = ({ productId }) => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
-            okButtonProps: { loading: isLoadingDeleteReview }, // Hiển thị loading trên nút OK
+            okButtonProps: { loading: isLoadingDeleteReview },
             onOk: () => {
                 return new Promise((resolve, reject) => {
                     deleteReview(id)
@@ -150,11 +151,11 @@ const ReviewTable = ({ productId }) => {
                         .then(() => {
                             setReviews(reviews.filter((review) => review.id !== id));
                             message.success("Xóa review thành công!");
-                            resolve(); // Đóng modal sau khi xóa thành công
+                            resolve();
                         })
                         .catch((error) => {
                             message.error(error.data.message);
-                            reject(); // Không đóng modal nếu xóa thất bại
+                            reject();
                         });
                 });
             },

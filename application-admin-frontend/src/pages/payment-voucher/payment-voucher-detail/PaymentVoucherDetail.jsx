@@ -72,18 +72,23 @@ const PaymentVoucherDetail = () => {
             okText: "Xóa",
             okType: "danger",
             cancelText: "Hủy",
+            okButtonProps: { loading: isLoadingDeletePaymentVoucher },
             onOk: () => {
-                deletePaymentVoucher(paymentVoucher.id)
-                    .unwrap()
-                    .then((data) => {
-                        message.success("Xóa phiếu chi thành công!");
-                        setTimeout(() => {
-                            navigate("/admin/payment-vouchers");
-                        }, 1500);
-                    })
-                    .catch((error) => {
-                        message.error(error.data.message);
-                    });
+                return new Promise((resolve, reject) => {
+                    deletePaymentVoucher(paymentVoucher.id)
+                        .unwrap()
+                        .then((data) => {
+                            message.success("Xóa phiếu chi thành công!");
+                            setTimeout(() => {
+                                navigate("/admin/payment-vouchers");
+                            }, 1500);
+                            resolve();
+                        })
+                        .catch((error) => {
+                            message.error(error.data.message);
+                            reject();
+                        });
+                });
             },
             footer: (_, { OkBtn, CancelBtn }) => (
                 <>

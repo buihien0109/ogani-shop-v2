@@ -119,9 +119,9 @@ function Header() {
                                                 <ul className="menu">
                                                     {auth.roles.includes("ADMIN") && (
                                                         <li className="menu-item">
-                                                            <NavLink to={"/admin/dashboard"}>
+                                                            <a href="/admin/dashboard">
                                                                 <span><i className="fa fa-user-secret" aria-hidden="true"></i></span> Trang quản trị
-                                                            </NavLink>
+                                                            </a>
                                                         </li>
                                                     )}
                                                     <li className="menu-item">
